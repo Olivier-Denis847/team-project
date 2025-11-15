@@ -9,7 +9,7 @@ public interface OptimizeOutputBoundary {
      * Prepares the success view for the optimize expenses use case.
      * @param data the output data
      */
-    void successView (OptimizeOutputBoundary data);
+    void successView (OptimizeOutputData data);
 
     /**
      * Prepares the failure view for the optimize expenses use case.
