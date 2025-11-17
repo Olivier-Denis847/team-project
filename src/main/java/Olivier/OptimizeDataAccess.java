@@ -2,16 +2,22 @@ package Olivier;
 
 import okhttp3.*;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class OptimizeDataAccess {
     private static final String API_KEY = System.getenv("GEMINI_API_KEY");
     private static final String MODEL = "gemini-2.5-flash";
-    private static final OkHttpClient client = new OkHttpClient();
+    private static final OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .build();
 
     public static void main(String[] args) {
-        String p = "Could you give me a cookie recipe";
+        String p = "Give two sentences of financial advice, respond only with the advice";
 
         OptimizeDataAccess test = new OptimizeDataAccess();
         System.out.println(test.generateText(p));
@@ -44,12 +50,9 @@ public class OptimizeDataAccess {
         Request request = new Request.Builder()
                 .url("https://generativelanguage.googleapis.com/v1/models/" + MODEL +
                         ":generateContent?key=" + API_KEY)
+                .addHeader("Content-Type", "application/json")
                 .post(body)
                 .build();
-
-        System.out.println("KEY RAW: [" + API_KEY + "]");
-        System.out.println("POST BODY: " + postData);
-        System.out.println("URL: " + request.url());
 
         try (Response response = client.newCall(request).execute()) {
 
@@ -58,7 +61,16 @@ public class OptimizeDataAccess {
             }
             else{
                 if (response.body() != null) {
-                    return response.body().string();
+                    String raw = response.body().string();
+
+                    JSONObject obj = new JSONObject(raw);
+
+                    return obj.getJSONArray("candidates")
+                            .getJSONObject(0)
+                            .getJSONObject("content")
+                            .getJSONArray("parts")
+                            .getJSONObject(0)
+                            .getString("text");
                 }
             }
             return "failed";

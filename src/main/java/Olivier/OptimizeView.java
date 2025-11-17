@@ -11,9 +11,9 @@ import java.beans.PropertyChangeListener;
 
 public class OptimizeView extends JPanel{
     private final String viewName = "Optimize";
-    JPanel timePanel;
-    JScrollPane labelPane;
-    JPanel buttonPanel;
+    private final JPanel timePanel;
+    private final JScrollPane labelPane;
+    private final JPanel buttonPanel;
 
     public OptimizeView(String[] labels){
         timePanel = makeTimePanel();
