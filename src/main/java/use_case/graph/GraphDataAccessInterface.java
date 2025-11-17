@@ -2,7 +2,7 @@ package use_case.graph;
 
 import java.util.List;
 
-import entity_tmp.Transaction;
+import entity.Transaction;
 
 public interface GraphDataAccessInterface {
 
