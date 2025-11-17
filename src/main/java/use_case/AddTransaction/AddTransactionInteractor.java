@@ -24,7 +24,7 @@ public class AddTransactionInteractor implements AddTransactionInputBoundary {
         Date date = requestModel.get_date();
 
         if (amount < 0) {
-            presenter.prepareFailureView("Amount must be greater than zero");
+            presenter.prepareFailureView("Amount must be greater than zero\n");
             return;
         }
         //delete this if branch later
