@@ -7,8 +7,8 @@ import use_case.graph.*;
 
 import javax.swing.*;
 
-import entity.Label;
-import entity.Transaction;
+import entity_tmp.Label;
+import entity_tmp.Transaction;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

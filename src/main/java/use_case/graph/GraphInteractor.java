@@ -3,8 +3,8 @@ package use_case.graph;
 import java.util.List;
 import java.util.Map;
 
-import entity.Label;
-import entity.Transaction;
+import entity_tmp.Label;
+import entity_tmp.Transaction;
 
 import java.util.ArrayList;
 import java.util.Calendar;
