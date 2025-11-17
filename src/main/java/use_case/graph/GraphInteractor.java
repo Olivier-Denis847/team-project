@@ -7,8 +7,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-import entity.Transaction;
-import use_case.graph.GraphDataAccessInterface;
+import Entity.Transaction;
+import Entity.Label;
 
 public class GraphInteractor implements GraphInputBoundary {
     private final GraphDataAccessInterface dataAccessObject;
@@ -33,7 +33,7 @@ public class GraphInteractor implements GraphInputBoundary {
         if (selectedType == null)
             selectedType = "Expense";
 
-        List<Transaction> transactions = selectedType == "Expense" ? dataAccessObject.getExpenses()
+        List<Transaction> transactions = selectedType.equalsIgnoreCase("Expense") ? dataAccessObject.getExpenses()
                 : dataAccessObject.getIncomes();
 
         Date now = new Date();
@@ -42,14 +42,14 @@ public class GraphInteractor implements GraphInputBoundary {
         int nowYear = nowCal.get(Calendar.YEAR);
         int nowMonth = nowCal.get(Calendar.MONTH);
 
-        // prefills the map with available dates
+        // Prefill the bar map with all possible keys initialized to 0
         if (selectedRange.equalsIgnoreCase("Day")) {
             int daysInMonth = nowCal.getActualMaximum(Calendar.DAY_OF_MONTH);
             for (int d = 1; d <= daysInMonth; d++) {
                 bar.put(d, 0f);
             }
         } else if (selectedRange.equalsIgnoreCase("Month")) {
-            for (int m = 1; m <= 12; m++) {
+            for (int m = 0; m < 12; m++) {
                 bar.put(m, 0f);
             }
         } else { // Year
@@ -80,21 +80,23 @@ public class GraphInteractor implements GraphInputBoundary {
 
             if (selectedRange.equals("Day")) {
                 if (year == nowYear && month == nowMonth) {
-                    bar.put(day, bar.get(day) + transaction.getAmount());
-                    // add to pie
-
+                    addToBar(bar, day, transaction);
+                    addToPie(pie, labels, transaction);
                 }
             }
 
             else if (selectedRange.equals("Month")) {
                 if (year == nowYear) {
-                    bar.put(month, bar.get(month) + transaction.getAmount());
+                    addToBar(bar, month, transaction);
+                    addToPie(pie, labels, transaction);
                 }
             }
 
-            else {
-                bar.put(year, bar.get(year) + transaction.getAmount());
+            else { // Year
+                addToBar(bar, year, transaction);
+                addToPie(pie, labels, transaction);
             }
+
         }
 
         /* package into output data and prepare graph */
@@ -105,5 +107,38 @@ public class GraphInteractor implements GraphInputBoundary {
                 pie,
                 alerts);
         graphPresenter.prepareGraph(outputData);
+    }
+
+    /**
+     * helper method to process data into pie map
+     * 
+     * @param pie
+     * @param labels
+     * @param t
+     */
+    private void addToPie(Map<String, Float> pie, List<Label> labels, Transaction t) {
+        if (labels == null || labels.isEmpty())
+            return;
+        for (Label label : labels) {
+            String labelName = label.getLabelName();
+            if (!pie.containsKey(labelName))
+                pie.put(labelName, t.getAmount());
+            else
+                pie.put(labelName, pie.get(labelName) + t.getAmount());
+        }
+    }
+
+    /**
+     * helper method to process data into bar map
+     * 
+     * @param bar
+     * @param range
+     * @param t
+     */
+    private void addToBar(Map<Integer, Float> bar, int range, Transaction t) {
+        if (!bar.containsKey(range))
+            bar.put(range, t.getAmount());
+        else
+            bar.put(range, bar.get(range) + t.getAmount());
     }
 }

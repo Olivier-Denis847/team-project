@@ -3,7 +3,6 @@ package use_case.graph;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class GraphOutputData {
     private String selectedRange;
