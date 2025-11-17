@@ -1,8 +1,14 @@
 package use_case.graph;
 
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 
 import Entity.Transaction;
+import Entity.Label;
 
 public interface GraphDataAccessInterface {
 
