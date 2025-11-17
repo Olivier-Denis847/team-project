@@ -31,18 +31,6 @@ public class GraphOutputData {
         return selectedType;
     }
 
-    public List<Integer> getX() {
-        if (bar == null)
-            return null;
-        return new ArrayList<>(bar.keySet());
-    }
-
-    public List<Float> getY() {
-        if (bar == null)
-            return null;
-        return new ArrayList<>(bar.values());
-    }
-
     public Map<String, Float> getPie() {
         return pie;
     }
