@@ -1,6 +1,6 @@
 package data_access;
 
-import Entity.Transaction;
+import entity.Transaction;
 import use_case.addtransaction.TransactionDataAccessInterface;
 
 

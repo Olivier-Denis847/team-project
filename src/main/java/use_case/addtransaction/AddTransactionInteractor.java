@@ -1,6 +1,6 @@
 package use_case.addtransaction;
-import Entity.Transaction;
-import Entity.Label;
+import entity.Transaction;
+import entity.Label;
 import java.util.*;
 
 public class AddTransactionInteractor implements AddTransactionInputBoundary {
