@@ -20,5 +20,5 @@ public interface OptimizeOutputBoundary {
     /**
      * Prepares the home page view.
      */
-    void toHome();
+    void cancelView ();
 }

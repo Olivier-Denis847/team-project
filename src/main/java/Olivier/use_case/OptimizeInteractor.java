@@ -27,5 +27,5 @@ public class OptimizeInteractor implements OptimizeInputBoundary{
     }
 
     @Override
-    public void cancel() {outputBoundary.toHome();}
+    public void cancel() {outputBoundary.cancelView();}
 }
