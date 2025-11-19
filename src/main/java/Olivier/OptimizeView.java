@@ -1,43 +1,94 @@
 package Olivier;
 
+import Olivier.interface_adapter.OptimizeState;
+import Olivier.interface_adapter.OptimizeController;
+import Olivier.interface_adapter.OptimizeViewModel;
+
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
-public class OptimizeView extends JPanel{
-    private final String viewName = "Optimize";
-    private final JPanel timePanel;
-    private final JScrollPane labelPane;
-    private final JPanel buttonPanel;
+public class OptimizeView extends JPanel implements PropertyChangeListener{
+    private final String viewName = "optimize expenses";
 
-    public OptimizeView(String[] labels){
-        timePanel = makeTimePanel();
-        labelPane = makeLabelPane(labels);
-        buttonPanel = makeButtonPanel();
+    private final ArrayList<JComboBox<String>> priorityBoxes = new ArrayList<>();
+    private final JButton goButton = new JButton("Confirm");
+    private final JButton cancelButton = new JButton("Cancel");
+
+    private final OptimizeViewModel viewModel;
+    private OptimizeController controller = null;
+
+    public OptimizeView(OptimizeViewModel viewModel) {
+        this.viewModel = viewModel;
+        viewModel.addPropertyChangeListener(this);
+
+        JPanel timePanel = makeTimePanel();
+        JScrollPane labelPane = makeLabelPane(viewModel.getState().getLabels());
+        JPanel buttonPanel = makeButtonPanel();
+
+        goButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                OptimizeState s = viewModel.getState();
+                controller.execute(
+                        s.getTime(),
+                        s.getLabels(),
+                        s.getPriorities()
+                );
+            }
+        });
+
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (controller != null) controller.cancel();
+            }
+        });
+
+        addPriorityListeners();
+
+        this.setLayout(new BorderLayout());
+        this.add(timePanel, BorderLayout.NORTH);
+        this.add(labelPane, BorderLayout.CENTER);
+        this.add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private void addPriorityListeners(){
+        for (int i = 0; i < priorityBoxes.size(); i++) {
+            priorityBoxes.get(i).addActionListener(e -> {
+                ArrayList<String> priorities = new ArrayList<>();
+                for (JComboBox<String> box : priorityBoxes) {
+                    priorities.add((String) box.getSelectedItem());
+                }
+                viewModel.getState().setPriorities(priorities.toArray(new String[0]));
+            });
+        }
     }
 
     private JPanel makeTimePanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Time (months)"));
 
-        JSlider slider = new JSlider(SwingConstants.HORIZONTAL, 1, 12, 1);
-        slider.setMajorTickSpacing(1);
-        slider.setPaintTicks(true);
-        slider.setPaintLabels(true);
-        slider.setSnapToTicks(true);
+        JSlider timeSlider = new JSlider(SwingConstants.HORIZONTAL, 1, 12, 1);
+        timeSlider.setMajorTickSpacing(1);
+        timeSlider.setPaintTicks(true);
+        timeSlider.setPaintLabels(true);
+        timeSlider.setSnapToTicks(true);
 
         JLabel sliderValue = new JLabel("Selected: 1 Month", SwingConstants.CENTER);
-        slider.addChangeListener(e -> {
-            int value = slider.getValue();
+        timeSlider.addChangeListener(e -> {
+            int value = timeSlider.getValue();
             sliderValue.setText("Selected: " + value + (value == 1 ? " Month" : " Months"));
+            if (!timeSlider.getValueIsAdjusting()) {
+                viewModel.getState().setTime(value);
+            }
         });
 
-        panel.add(slider, BorderLayout.CENTER);
+        panel.add(timeSlider, BorderLayout.CENTER);
         panel.add(sliderValue, BorderLayout.SOUTH);
         return panel;
     }
@@ -57,6 +108,7 @@ public class OptimizeView extends JPanel{
 
         String[] priorities = {"Low", "Medium", "High"};
         JComboBox<String> priorityLabel = new JComboBox<>(priorities);
+        this.priorityBoxes.add(priorityLabel);
         priorityLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         panel.add(nameLabel);
@@ -84,25 +136,16 @@ public class OptimizeView extends JPanel{
 
     private JPanel makeButtonPanel(){
         JPanel panel = new JPanel();
-        JButton goButton = new JButton("Confirm");
-        JButton cancelButton = new JButton("Cancel");
         panel.add(goButton);
         panel.add(cancelButton);
 
         return panel;
     }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Optimize View");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    public void setController(OptimizeController controller) {this.controller = controller;}
 
-        String[] labels = {"A", "B", "C", "D", "E", "F", "G", "H"};
-        OptimizeView view = new OptimizeView(labels);
-
-        frame.add(view.timePanel, BorderLayout.NORTH);
-        frame.add(view.labelPane, BorderLayout.CENTER);
-        frame.add(view.buttonPanel, BorderLayout.SOUTH);
-        frame.setSize(300, 300);
-        frame.setVisible(true);
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        //Nothing needed
     }
 }

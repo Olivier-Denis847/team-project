@@ -3,10 +3,10 @@ package Olivier.interface_adapter;
 import Olivier.use_case.OptimizeInputData;
 import Olivier.use_case.OptimizeInputBoundary;
 
-public class OptimiseController {
+public class OptimizeController {
     private final OptimizeInputBoundary optimiseInteractor;
 
-    public OptimiseController(OptimizeInputBoundary optimiseInteractor) {
+    public OptimizeController(OptimizeInputBoundary optimiseInteractor) {
         this.optimiseInteractor = optimiseInteractor;
     }
 

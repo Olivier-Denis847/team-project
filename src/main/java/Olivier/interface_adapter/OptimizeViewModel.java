@@ -4,18 +4,23 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 public class OptimizeViewModel {
-    private static final String viewName = "optimize expenses";
-    private final OptimizeState state = new OptimizeState();
+    private final String viewName;
+    private OptimizeState state;
+
+    public OptimizeViewModel() {
+        this.viewName = "optimize expenses";
+        OptimizeState s = new OptimizeState();
+        s.setLabels(new String[]{"A", "B", "C", "D", "E", "F", "G", "H"});
+        setState(s);
+    }
 
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
-    public String getViewName() {
-        return viewName;
-    }
+    public String getViewName() {return viewName;}
 
-    public OptimizeState getState() {
-        return this.state;
-    }
+    public void setState(OptimizeState state) {this.state = state;}
+
+    public OptimizeState getState() {return this.state;}
 
     /**
      * Fires a property changed event
