@@ -12,7 +12,7 @@ public class OptimizePresenter implements OptimizeOutputBoundary {
 
     @Override
     public void successView (OptimizeOutputData data) {
-        OptimizeState state = viewModel.getState();
+        OptimizeState state = new OptimizeState(viewModel.getState());
 
         state.setResult(data.getMessage());
         state.setError(null);
@@ -22,7 +22,7 @@ public class OptimizePresenter implements OptimizeOutputBoundary {
 
     @Override
     public void failureView (String errorMessage) {
-        OptimizeState state = viewModel.getState();
+        OptimizeState state = new OptimizeState(viewModel.getState());
 
         state.setResult(null);
         state.setError(errorMessage);
