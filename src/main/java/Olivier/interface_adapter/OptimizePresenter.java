@@ -32,6 +32,7 @@ public class OptimizePresenter implements OptimizeOutputBoundary {
 
     @Override
     public void cancelView () {
+        this.failureView("Not implemented yet.");
         //Implement after making a home page
     }
 

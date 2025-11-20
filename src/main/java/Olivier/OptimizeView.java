@@ -6,21 +6,17 @@ import Olivier.interface_adapter.OptimizeViewModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 public class OptimizeView extends JPanel implements PropertyChangeListener{
-    private final String viewName = "optimize expenses";
-
     private final ArrayList<JComboBox<String>> priorityBoxes = new ArrayList<>();
     private final JButton goButton = new JButton("Confirm");
-    private final JButton cancelButton = new JButton("Cancel");
+    private final JButton cancelButton = new JButton("Back");
 
-    private final OptimizeViewModel viewModel;
-    private OptimizeController controller = null;
+    private final transient OptimizeViewModel viewModel;
+    private transient OptimizeController controller = null;
 
     public OptimizeView(OptimizeViewModel viewModel) {
         this.viewModel = viewModel;
@@ -30,23 +26,17 @@ public class OptimizeView extends JPanel implements PropertyChangeListener{
         JScrollPane labelPane = makeLabelPane(viewModel.getState().getLabels());
         JPanel buttonPanel = makeButtonPanel();
 
-        goButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                OptimizeState s = viewModel.getState();
-                controller.execute(
-                        s.getTime(),
-                        s.getLabels(),
-                        s.getPriorities()
-                );
-            }
+        goButton.addActionListener(e -> {
+            OptimizeState s = viewModel.getState();
+            controller.execute(
+                    s.getTime(),
+                    s.getLabels(),
+                    s.getPriorities()
+            );
         });
 
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (controller != null) controller.cancel();
-            }
+        cancelButton.addActionListener(e -> {
+            if (controller != null) controller.cancel();
         });
 
         addPriorityListeners();
@@ -157,11 +147,19 @@ public class OptimizeView extends JPanel implements PropertyChangeListener{
 
         if (state.getError() != null) {
             JOptionPane.showMessageDialog(this, state.getError(), "Error", JOptionPane.ERROR_MESSAGE);
+
+            OptimizeState cleared = new OptimizeState(state);
+            cleared.setError(null);
+            viewModel.setState(cleared);
             return;
         }
 
         if (state.getResult() != null) {
             JOptionPane.showMessageDialog(this, state.getResult(), "Results", JOptionPane.INFORMATION_MESSAGE);
+
+            OptimizeState cleared = new OptimizeState(state);
+            cleared.setResult(null);
+            viewModel.setState(cleared);
         }
     }
 }

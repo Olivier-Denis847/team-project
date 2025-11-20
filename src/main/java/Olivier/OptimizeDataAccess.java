@@ -15,10 +15,11 @@ public class OptimizeDataAccess {
             .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
             .build();
+    private static final String FORMAT = "\nPlease give advice on how to optimize spending."
+            + "Respond only with the advice.";
 
     public String generateText(String expenses){
-        String prompt = "Give advice on how to optimize this spending. Respond only with the advice. \n"
-                + expenses;
+        String prompt = expenses + FORMAT;
 
         JSONObject textObj = new JSONObject();
         textObj.put("text", prompt);
@@ -69,8 +70,7 @@ public class OptimizeDataAccess {
 
         }
         catch (IOException e) {
-            e.printStackTrace();
-            return "failed";
+            return "IOException";
         }
         return "Something went wrong";
     }

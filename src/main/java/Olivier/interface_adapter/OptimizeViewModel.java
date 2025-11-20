@@ -12,7 +12,14 @@ public class OptimizeViewModel {
     public OptimizeViewModel() {
         this.viewName = "optimize expenses";
         OptimizeState s = new OptimizeState(null);
-        s.setLabels(new String[]{"A", "B", "C", "D", "E", "F", "G", "H"});
+        s.setLabels(new String[]{"Food", "Transportation", "Recreation", "School"});
+        setState(s);
+    }
+
+    public OptimizeViewModel(String[] labels) {
+        this.viewName = "optimize expenses";
+        OptimizeState s = new OptimizeState(null);
+        s.setLabels(labels);
         setState(s);
     }
 
