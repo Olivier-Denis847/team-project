@@ -1,7 +1,7 @@
-package Olivier.interface_adapter;
+package optimize.interface_adapter;
 
-import Olivier.use_case.OptimizeInputData;
-import Olivier.use_case.OptimizeInputBoundary;
+import optimize.use_case.OptimizeInputData;
+import optimize.use_case.OptimizeInputBoundary;
 
 public class OptimizeController {
     private final OptimizeInputBoundary optimiseInteractor;

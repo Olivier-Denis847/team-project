@@ -1,7 +1,7 @@
-package Olivier;
+package optimize;
 
-import Olivier.interface_adapter.*;
-import Olivier.use_case.*;
+import optimize.interface_adapter.*;
+import optimize.use_case.*;
 import javax.swing.*;
 
 public class Starter {

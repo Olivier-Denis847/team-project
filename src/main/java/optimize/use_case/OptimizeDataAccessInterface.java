@@ -1,4 +1,4 @@
-package Olivier.use_case;
+package optimize.use_case;
 
 /**
  * DAO interface for the optimize use case

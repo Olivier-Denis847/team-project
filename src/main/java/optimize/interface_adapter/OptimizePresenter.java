@@ -1,7 +1,7 @@
-package Olivier.interface_adapter;
+package optimize.interface_adapter;
 
-import Olivier.use_case.OptimizeOutputBoundary;
-import Olivier.use_case.OptimizeOutputData;
+import optimize.use_case.OptimizeOutputBoundary;
+import optimize.use_case.OptimizeOutputData;
 
 public class OptimizePresenter implements OptimizeOutputBoundary {
     private final OptimizeViewModel viewModel;

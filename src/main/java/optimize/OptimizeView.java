@@ -1,8 +1,8 @@
-package Olivier;
+package optimize;
 
-import Olivier.interface_adapter.OptimizeState;
-import Olivier.interface_adapter.OptimizeController;
-import Olivier.interface_adapter.OptimizeViewModel;
+import optimize.interface_adapter.OptimizeState;
+import optimize.interface_adapter.OptimizeController;
+import optimize.interface_adapter.OptimizeViewModel;
 
 import javax.swing.*;
 import java.awt.*;

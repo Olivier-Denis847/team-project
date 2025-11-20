@@ -1,4 +1,4 @@
-package Olivier.use_case;
+package optimize.use_case;
 
 public class OptimizeInputData {
 
