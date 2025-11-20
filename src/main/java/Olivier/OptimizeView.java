@@ -64,7 +64,7 @@ public class OptimizeView extends JPanel implements PropertyChangeListener{
                 for (JComboBox<String> box : priorityBoxes) {
                     priorities.add((String) box.getSelectedItem());
                 }
-                viewModel.getState().setPriorities(priorities.toArray(new String[0]));
+                viewModel.updatePriorities(priorities.toArray(new String[0]));
             });
         }
     }
@@ -84,9 +84,10 @@ public class OptimizeView extends JPanel implements PropertyChangeListener{
             int value = timeSlider.getValue();
             sliderValue.setText("Selected: " + value + (value == 1 ? " Month" : " Months"));
             if (!timeSlider.getValueIsAdjusting()) {
-                viewModel.getState().setTime(value);
+                viewModel.updateTime(value);
             }
         });
+        viewModel.updateTime(1);
 
         panel.add(timeSlider, BorderLayout.CENTER);
         panel.add(sliderValue, BorderLayout.SOUTH);
@@ -126,6 +127,12 @@ public class OptimizeView extends JPanel implements PropertyChangeListener{
              labelPanel.add(makeCard(label));
          }
 
+        ArrayList<String> priorities = new ArrayList<>();
+        for (JComboBox<String> box : priorityBoxes) {
+            priorities.add((String) box.getSelectedItem());
+        }
+        viewModel.updatePriorities(priorities.toArray(new String[0]));
+
          JScrollPane scrollPane = new JScrollPane(labelPanel);
          scrollPane.setBorder(BorderFactory.createTitledBorder("Labels"));
          scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -146,6 +153,15 @@ public class OptimizeView extends JPanel implements PropertyChangeListener{
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        //Nothing needed
+        OptimizeState state = (OptimizeState) evt.getNewValue();
+
+        if (state.getError() != null) {
+            JOptionPane.showMessageDialog(this, state.getError(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (state.getResult() != null) {
+            JOptionPane.showMessageDialog(this, state.getResult(), "Results", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 }

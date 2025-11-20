@@ -1,6 +1,5 @@
 package Olivier.interface_adapter;
 
-import Olivier.use_case.OptimizeInputBoundary;
 import Olivier.use_case.OptimizeOutputBoundary;
 import Olivier.use_case.OptimizeOutputData;
 
@@ -13,14 +12,22 @@ public class OptimizePresenter implements OptimizeOutputBoundary {
 
     @Override
     public void successView (OptimizeOutputData data) {
-        //Temporary solution
-        System.out.println(data.getMessage());
+        OptimizeState state = viewModel.getState();
+
+        state.setResult(data.getMessage());
+        state.setError(null);
+
+        viewModel.setState(state);
     }
 
     @Override
     public void failureView (String errorMessage) {
-        //Temporary solution
-        System.out.println(errorMessage);
+        OptimizeState state = viewModel.getState();
+
+        state.setResult(null);
+        state.setError(errorMessage);
+
+        viewModel.setState(state);
     }
 
     @Override

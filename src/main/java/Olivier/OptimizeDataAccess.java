@@ -16,13 +16,6 @@ public class OptimizeDataAccess {
             .writeTimeout(60, TimeUnit.SECONDS)
             .build();
 
-    public static void main(String[] args) {
-        String p = "Give two sentences of financial advice, respond only with the advice";
-
-        OptimizeDataAccess test = new OptimizeDataAccess();
-        System.out.println(test.generateText(p));
-    }
-
     public String generateText(String expenses){
         String prompt = "Give advice on how to optimize this spending. Respond only with the advice. \n"
                 + expenses;
@@ -57,30 +50,29 @@ public class OptimizeDataAccess {
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
-
+            System.out.println(response.code());
             if (!response.isSuccessful()) {
-                System.out.println(response.code());
+                return "failed";
             }
-            else{
-                if (response.body() != null) {
-                    String raw = response.body().string();
+            if (response.body() != null) {
+                String raw = response.body().string();
 
-                    JSONObject obj = new JSONObject(raw);
+                JSONObject obj = new JSONObject(raw);
 
-                    return obj.getJSONArray("candidates")
-                            .getJSONObject(0)
-                            .getJSONObject("content")
-                            .getJSONArray("parts")
-                            .getJSONObject(0)
-                            .getString("text");
-                }
+                return obj.getJSONArray("candidates")
+                        .getJSONObject(0)
+                        .getJSONObject("content")
+                        .getJSONArray("parts")
+                        .getJSONObject(0)
+                        .getString("text");
             }
-            return "failed";
+
         }
         catch (IOException e) {
             e.printStackTrace();
             return "failed";
         }
+        return "Something went wrong";
     }
 
 }
