@@ -1,0 +1,30 @@
+package use_case.add_transaction;
+
+import java.util.Date;
+
+public class AddTransactionRequestModel {
+    private final float amount;
+    private final String note;
+    private final String type;
+    private Date date;
+
+    public AddTransactionRequestModel(float amount, String note, String type, Date date) {
+        this.amount = amount;
+        this.note = note;
+        this.type = type;
+    }
+    public float getAmount(){
+        return amount;
+    }
+    public String getType(){
+        return type;
+    }
+
+    public String getNote(){
+        return note;
+    }
+
+    public Date getDate(){
+        return date;
+    }
+}

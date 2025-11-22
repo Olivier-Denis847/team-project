@@ -23,7 +23,7 @@ public class Transaction {
         this.amount = amount;
         this.labels = labels;
         this.note = note;
-        this.date = date;
+        this.date = new Date();
         this.type = type;
     }
 
@@ -74,5 +74,17 @@ public class Transaction {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", type='" + type + '\'' +
+                ", note='" + note + '\'' +
+                ", labels='" + labels + '\'' +
+                ", date=" + date +
+                '}';
     }
 }
