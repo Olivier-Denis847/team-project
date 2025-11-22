@@ -1,4 +1,4 @@
-package Entity;
+package entity;
 
 import java.util.Date;
 import java.util.List;
@@ -12,7 +12,7 @@ public class Transaction {
     private List<Label> labels;
     private String note;
     private Date date;
-    private String type; // either "income" or "expense", not case sensitive
+    private String type; // either "income" or "expense", not case-sensitive
 
     /*
      * Constructor for Transaction class.
@@ -74,5 +74,17 @@ public class Transaction {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", type='" + type + '\'' +
+                ", note='" + note + '\'' +
+                ", labels='" + labels + '\'' +
+                ", date=" + date +
+                '}';
     }
 }
