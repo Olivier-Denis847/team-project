@@ -1,7 +1,7 @@
 // Main.java
 package app;
 
-import view.GraphPanel;
+import view.graph.GraphPanel;
 import interface_adapter.graph.*;
 import use_case.graph.*;
 
