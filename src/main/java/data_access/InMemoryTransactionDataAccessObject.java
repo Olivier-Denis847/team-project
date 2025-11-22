@@ -17,6 +17,12 @@ public class InMemoryTransactionDataAccessObject implements TransactionDataAcces
     }
 
     @Override
+    public List<Transaction> getAll() {
+        return List.of();
+    }
+
+
+    @Override
     public List<Transaction> getTransactions() {
         return transactions;
     }

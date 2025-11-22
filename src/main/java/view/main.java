@@ -25,6 +25,7 @@ public class main {
 
         controller.addTransaction(100, "Income", "Test1");
         controller.addTransaction(200, "Expense", "Test2");
+        controller.addTransaction(-100, "Income", "Test3");
 
         System.out.println(dataAccess.getTransactions());
     }

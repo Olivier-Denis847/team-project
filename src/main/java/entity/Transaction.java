@@ -81,10 +81,10 @@ public class Transaction {
         return "Transaction{" +
                 "id=" + id +
                 ", amount=" + amount +
-                ", type='" + type + '\'' +
-                ", note='" + note + '\'' +
                 ", labels='" + labels + '\'' +
+                ", note='" + note + '\'' +
                 ", date=" + date +
+                ", type='" + type + '\'' +
                 '}';
     }
 }

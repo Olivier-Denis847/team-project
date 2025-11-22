@@ -5,8 +5,6 @@ import java.util.*;
 
 public class AddTransactionInteractor implements AddTransactionInputBoundary {
     private final AddTransactionOutputBoundary presenter;
-    private final List<Transaction> transactions =  new ArrayList<>();
-    private Transaction transaction;
     private final TransactionDataAccessInterface dataAccess;
     private int nextId = 1;
 
@@ -22,17 +20,17 @@ public class AddTransactionInteractor implements AddTransactionInputBoundary {
         String note = requestModel.getNote();
         Date date = requestModel.getDate();
 
-        if (amount < 0) {
+        if (amount <= 0) {
             presenter.prepareFailureView("Amount must be greater than zero\n");
             return;
         }
         //delete this if branch later
         if (!type.equalsIgnoreCase("income") && !type.equalsIgnoreCase("expense")) {
             presenter.prepareFailureView("Income or Expense is not supported");
+            return;
         }
 
         Transaction t = new Transaction(nextId++, amount, new ArrayList<Label>(), note, date, type);
-        transactions.add(t);
 
         dataAccess.save(t);
         AddTransactionResponseModel responseModel = new AddTransactionResponseModel(
@@ -45,7 +43,7 @@ public class AddTransactionInteractor implements AddTransactionInputBoundary {
 
         presenter.prepareSuccessView(responseModel);
     }
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
+    //public List<Transaction> getTransactions() {
+        //return transactions;
+    //}
 }
