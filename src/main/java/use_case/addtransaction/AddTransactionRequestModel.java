@@ -26,6 +26,6 @@ public class AddTransactionRequestModel {
     }
 
     public Date getDate(){
-        return date;
+        return new Date();
     }
 }

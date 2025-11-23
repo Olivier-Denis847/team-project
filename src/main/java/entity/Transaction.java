@@ -23,7 +23,7 @@ public class Transaction {
         this.amount = amount;
         this.labels = labels;
         this.note = note;
-        this.date = new Date();
+        this.date = date;
         this.type = type;
     }
 
