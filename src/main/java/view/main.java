@@ -1,8 +1,8 @@
 package view;
 
+import data_access.JsonTransactionDataAccessObject;
 import interface_adapter.AddTransaction.*;
 import use_case.addtransaction.*;
-import data_access.InMemoryTransactionDataAccessObject;
 
 
 public class main {
@@ -10,8 +10,8 @@ public class main {
         AddTransactionViewModel viewModel = new AddTransactionViewModel();
         AddTransactionPresenter presenter = new AddTransactionPresenter(viewModel);
 
-        InMemoryTransactionDataAccessObject dataAccess =
-                new InMemoryTransactionDataAccessObject();
+        TransactionDataAccessInterface dataAccess =
+                new JsonTransactionDataAccessObject("transactions.json");
 
         AddTransactionInteractor interactor =
                 new AddTransactionInteractor(presenter, dataAccess);

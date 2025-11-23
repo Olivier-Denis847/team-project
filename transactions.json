@@ -1,0 +1,8 @@
+[
+  {"id":1,"amount":2.22222221E11,"type":"Expense","note":"yaaaaaa","date":"1763876155254"},
+  {"id":1,"amount":100.0,"type":"Income","note":"Test1","date":"1763876155254"},
+  {"id":2,"amount":200.0,"type":"Expense","note":"Test2","date":"1763876155254"},
+  {"id":3,"amount":1000.0,"type":"Income","note":"sararyyyy","date":"1763876155255"},
+  {"id":4,"amount":250.0,"type":"Expense","note":"for dinner","date":"1763876155255"},
+  {"id":5,"amount":5.5555553E9,"type":"Expense","note":"yeeeeeeeeeeeee","date":"1763876155253"}
+]

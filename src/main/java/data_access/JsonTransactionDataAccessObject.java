@@ -28,55 +28,91 @@ public class JsonTransactionDataAccessObject implements TransactionDataAccessInt
         }
         List<Transaction> list = new ArrayList<>();
 
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                if (line.trim().isEmpty()) continue;
-                if (!line.trim().startsWith("{")) continue;
-                Map<String, String> map = parseJsonLine(line);
+        try {
+            String content = readFile();
+            if (content.trim().isEmpty()) return list;
+
+            content = content.trim();
+            if (content.startsWith("[")) content = content.substring(1);
+            if (content.endsWith("]")) content = content.substring(0, content.length() - 1);
+
+            String[] objects = content.split("(?<=}),");
+
+            for (String obj : objects) {
+                obj = obj.trim();
+                if (obj.endsWith(",")) obj = obj.substring(0, obj.length() - 1);
+
+                Map<String, String> map = parseJsonObject(obj);
 
                 int id = Integer.parseInt(map.get("id"));
                 float amount = Float.parseFloat(map.get("amount"));
                 String type = map.get("type");
                 String note = map.get("note");
-                Date date = new Date(Long.parseLong(map.get("date")));
+                long dateLong = Long.parseLong(map.get("date"));
+                Date date = new Date(dateLong);
+
                 list.add(new Transaction(id, amount, new ArrayList<Label>(), note, date, type));
             }
-        } catch (Exception e) {
+        }catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         return list;
     }
 
-    private Map<String, String> parseJsonLine(String line) {
+    private String readFile() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+        return sb.toString();
+    }
+
+    private Map<String, String> parseJsonObject(String json) {
         Map<String, String> map = new HashMap<>();
 
-        line = line.replace("{", "").replace("}", "");
-        String[] split = line.split(",");
+        json = json.replace("{", "").replace("}", "").trim();
+        String[] pairs = json.split(",");
 
-        for (String item : split) {
-            String[] keyValue = item.split(":");
+        for (String pair : pairs) {
+            String[] keyValue = pair.split(":", 2);
             String key = keyValue[0].trim().replace("\"", "");
             String value = keyValue[1].trim().replace("\"", "");
             map.put(key, value);
         }
+
         return map;
     }
 
     private void writeToFile(List<Transaction> list) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {
-            for (Transaction transction : list) {
-                pw.println(transction.toString());
+
+            pw.println("[");
+            for (int i = 0; i < list.size(); i++) {
+                Transaction transaction = list.get(i);
+                String json =
+                        "  {" +
+                                "\"id\":" + transaction.getId() + "," +
+                                "\"amount\":" + transaction.getAmount() + "," +
+                                "\"type\":\"" + transaction.getType() + "\"," +
+                                "\"note\":\"" + transaction.getNote() + "\"," +
+                                "\"date\":\"" + transaction.getDate().getTime() + "\"" +
+                                "}";
+                if (i < list.size() - 1) json += ",";
+                pw.println(json);
             }
+            pw.println("]");
+
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to write JSON", e);
         }
     }
 
     @Override
     public List<Transaction> getTransactions() {
-    List<Transaction> list = new ArrayList<>();
-    return list;
+    return getAll();
     }
 }
