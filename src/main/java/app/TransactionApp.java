@@ -8,7 +8,7 @@ import use_case.add_transaction.AddTransactionInteractor;
 import use_case.add_transaction.TransactionDataAccessInterface;
 import view.add_transaction.AddTransactionView;
 
-class addTransaction {
+class TransactionApp {
     public static void main(String[] args) {
         AddTransactionViewModel viewModel = new AddTransactionViewModel();
         AddTransactionPresenter presenter = new AddTransactionPresenter(viewModel);
