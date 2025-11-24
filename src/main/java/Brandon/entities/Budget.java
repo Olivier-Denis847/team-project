@@ -78,3 +78,7 @@ public class Budget {
     // Filters: [ All months | Over budget | Under budget | No budget ]
     // Click columns can sort by that value? (e.g., click remaining selects highest remaining first)
     // Select to jump to that month's budget
+// Extra code contribution other than use case (TODO in MainView file)
+// Review another pull request
+// Update presentation (UML, screenshots of use case)
+// UML

@@ -46,21 +46,20 @@ public class BudgetStarter {
                     () -> cardLayout.show(root, YEAR_OVERVIEW)
             );
 
-            // Add Budget view (SetBudgetView) with back to menu
+            // Add SetBudgetView
             SetBudgetView addBudgetView = new SetBudgetView(setBudgetController, setBudgetViewModel,
                     () -> cardLayout.show(root, MAIN_MENU)
             );
 
-            // Check Budget view with:
-            // - back to menu
-            // - Add Budget button that jumps directly to ADD_BUDGET
+            // Add CheckBudgetView - Add Budget button that jumps directly to ADD_BUDGET
             CheckBudgetView checkBudgetView = new CheckBudgetView(dataAccess, () -> cardLayout.show(root, MAIN_MENU),
                     monthKey -> {addBudgetView.setMonthYearFromKey(monthKey); cardLayout.show(root, ADD_BUDGET);}
             );
 
-            YearOverviewView yearOverviewView = new YearOverviewView(() -> cardLayout.show(root, MAIN_MENU));
+            YearOverviewView yearOverviewView =
+                    new YearOverviewView(dataAccess, () -> cardLayout.show(root, MAIN_MENU));
 
-            // Placeholder full-year view
+            // Add YearOverviewView
             JPanel fullYearView = new JPanel();
             fullYearView.add(new JLabel("Full Year Budget view coming soon."));
 
