@@ -27,5 +27,7 @@
   {"id":2,"amount":200.0,"type":"Expense","note":"Test2","date":"1763963339794"},
   {"id":1,"amount":100.0,"type":"Income","note":"Test1","date":"1764015575863"},
   {"id":2,"amount":200.0,"type":"Expense","note":"Test2","date":"1764015575979"},
-  {"id":3,"amount":789.0,"type":"Income","note":"wiya","date":"1764015584222"}
+  {"id":3,"amount":789.0,"type":"Income","note":"wiya","date":"1764015584222"},
+  {"id":1,"amount":100.0,"type":"Income","note":"Test1","date":"1764016173248"},
+  {"id":2,"amount":200.0,"type":"Expense","note":"Test2","date":"1764016173367"}
 ]
