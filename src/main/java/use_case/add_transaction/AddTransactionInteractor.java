@@ -1,4 +1,4 @@
-package add_transaction.use_case.addtransaction;
+package use_case.add_transaction;
 import entity.Transaction;
 import entity.Label;
 import java.util.*;

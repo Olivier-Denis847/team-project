@@ -1,11 +1,11 @@
-package add_transaction.view;
+package view.add_transaction;
 
 import data_access.JsonTransactionDataAccessObject;
-import add_transaction.interface_adapter.AddTransaction.AddTransactionController;
-import add_transaction.interface_adapter.AddTransaction.AddTransactionPresenter;
-import add_transaction.interface_adapter.AddTransaction.AddTransactionViewModel;
-import add_transaction.use_case.addtransaction.AddTransactionInteractor;
-import add_transaction.use_case.addtransaction.TransactionDataAccessInterface;
+import interface_adapter.add_transaction.AddTransactionController;
+import interface_adapter.add_transaction.AddTransactionPresenter;
+import interface_adapter.add_transaction.AddTransactionViewModel;
+import use_case.add_transaction.AddTransactionInteractor;
+import use_case.add_transaction.TransactionDataAccessInterface;
 
 
 public class main {

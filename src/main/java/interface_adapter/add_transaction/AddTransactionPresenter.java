@@ -1,7 +1,7 @@
-package add_transaction.interface_adapter.AddTransaction;
+package interface_adapter.add_transaction;
 
-import add_transaction.use_case.addtransaction.AddTransactionOutputBoundary;
-import add_transaction.use_case.addtransaction.AddTransactionResponseModel;
+import use_case.add_transaction.AddTransactionOutputBoundary;
+import use_case.add_transaction.AddTransactionResponseModel;
 
 public class AddTransactionPresenter implements AddTransactionOutputBoundary {
     private final AddTransactionViewModel viewModel;

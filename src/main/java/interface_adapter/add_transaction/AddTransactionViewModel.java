@@ -1,4 +1,4 @@
-package add_transaction.interface_adapter.AddTransaction;
+package interface_adapter.add_transaction;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
