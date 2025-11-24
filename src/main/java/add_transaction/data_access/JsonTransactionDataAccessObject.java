@@ -1,8 +1,8 @@
-package data_access;
+package add_transaction.data_access;
 
 import entity.Transaction;
 import entity.Label;
-import use_case.addtransaction.TransactionDataAccessInterface;
+import add_transaction.use_case.addtransaction.TransactionDataAccessInterface;
 
 import java.io.*;
 import java.util.*;

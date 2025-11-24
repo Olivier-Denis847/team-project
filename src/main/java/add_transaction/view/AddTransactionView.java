@@ -1,10 +1,12 @@
-package view;
+package add_transaction.view;
 
-import interface_adapter.AddTransaction.AddTransactionController;
-import interface_adapter.AddTransaction.AddTransactionViewModel;
+import add_transaction.interface_adapter.AddTransaction.AddTransactionController;
+import add_transaction.interface_adapter.AddTransaction.AddTransactionViewModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class AddTransactionView extends JFrame {
     private AddTransactionController controller;
@@ -42,9 +44,15 @@ public class AddTransactionView extends JFrame {
         outputArea.setEditable(false);
         add(new JScrollPane(outputArea), BorderLayout.CENTER);
 
-        viewModel.setOnUpdate(() -> {
-            outputArea.append(viewModel.getMessage());
+        viewModel.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if ("message".equals(evt.getPropertyName())) {
+                    outputArea.append((String) evt.getNewValue() + "\n");
+                }
+            }
         });
+
 
         addButton.addActionListener(e -> {
             try {

@@ -1,7 +1,7 @@
-package data_access;
+package add_transaction.data_access;
 
 import entity.Transaction;
-import use_case.addtransaction.TransactionDataAccessInterface;
+import add_transaction.use_case.addtransaction.TransactionDataAccessInterface;
 
 
 import java.util.ArrayList;

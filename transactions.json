@@ -12,5 +12,15 @@
   {"id":2,"amount":200.0,"type":"Expense","note":"Test2","date":"1763877295219"},
   {"id":3,"amount":10.0,"type":"Income","note":".....","date":"1763877307819"},
   {"id":1,"amount":100.0,"type":"Income","note":"Test1","date":"1763877693680"},
-  {"id":2,"amount":200.0,"type":"Expense","note":"Test2","date":"1763877693816"}
+  {"id":2,"amount":200.0,"type":"Expense","note":"Test2","date":"1763877693816"},
+  {"id":1,"amount":100.0,"type":"Income","note":"Test1","date":"1763940353191"},
+  {"id":2,"amount":200.0,"type":"Expense","note":"Test2","date":"1763940353301"},
+  {"id":3,"amount":11111.0,"type":"Income","note":"wwwwwwwww","date":"1763940360549"},
+  {"id":1,"amount":100.0,"type":"Income","note":"Test1","date":"1763941201349"},
+  {"id":2,"amount":200.0,"type":"Expense","note":"Test2","date":"1763941201448"},
+  {"id":3,"amount":5600.0,"type":"Income","note":"sallaryyy","date":"1763941216680"},
+  {"id":4,"amount":3566.0,"type":"Expense","note":"bought a car","date":"1763941237152"},
+  {"id":1,"amount":100.0,"type":"Income","note":"Test1","date":"1763960389607"},
+  {"id":2,"amount":200.0,"type":"Expense","note":"Test2","date":"1763960389713"},
+  {"id":3,"amount":543221.0,"type":"Income","note":"new","date":"1763960400406"}
 ]

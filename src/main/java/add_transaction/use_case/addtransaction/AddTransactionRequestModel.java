@@ -1,4 +1,4 @@
-package use_case.addtransaction;
+package add_transaction.use_case.addtransaction;
 
 import java.util.Date;
 
