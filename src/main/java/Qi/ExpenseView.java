@@ -51,19 +51,21 @@ public class ExpenseView extends JFrame {
                         Color color;
                         String colorStr = lbl.getColor();
 
-                        // Allow both names ("Red") and hex codes ("#FF0000")
-                        if (colorStr.startsWith("#")) {
+                        // SPECIAL CASE: If the option is not a color name, default to gray or white
+                        if (colorStr.equals("Display Graph") || colorStr.equals("Display on Home Page")) {
+                            // You can pick a specific color for these tags, e.g., Cyan
+                            color = Color.CYAN;
+                        }
+                        else if (colorStr.startsWith("#")) {
                             color = Color.decode(colorStr);
                         } else {
                             color = (Color) Color.class.getField(colorStr.toLowerCase()).get(null);
                         }
 
                         label.setBackground(color);
-
-                        // Change text color for visibility
                         label.setForeground(getContrastColor(color));
+
                     } catch (Exception e) {
-                        // Default color if parsing fails
                         label.setBackground(Color.LIGHT_GRAY);
                         label.setForeground(Color.BLACK);
                     }

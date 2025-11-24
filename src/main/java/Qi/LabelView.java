@@ -2,23 +2,27 @@ package Qi;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LabelView extends JFrame {
 
-    private JTextField nameField =  new JTextField(20);
+    private JTextField nameField = new JTextField(20);
     private JTextField amountField = new JTextField(20);
     private JTextArea descriptionField = new JTextArea(4, 20);
-    private JTextField dateField = new JTextField(20);
-    private JTextField colorField = new JTextField(20);
+
+    // CHANGED: Replaced TextField with ComboBox
+    private String[] colorOptions = {
+            "Red", "Blue", "Green", "Yellow", "Orange",
+            "Pink", "Cyan", "Magenta", "Gray", "Black"
+    };
+    private JComboBox<String> colorBox = new JComboBox<>(colorOptions);
+
+    // REMOVED: dateField (Transaction already records date)
 
     private JButton saveButton = new JButton("Save");
     private JButton cancelButton = new JButton("Cancel");
     private JButton deleteButton = new JButton("Delete");
-
 
     public LabelView(LabelController labelController, Label existingLabel, int userId) {
         setTitle(existingLabel == null ? "Create Label" : "Edit Label");
@@ -28,10 +32,11 @@ public class LabelView extends JFrame {
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new GridLayout(10, 1 , 5, 5));
+        // Reduced row count since Date is removed
+        contentPanel.setLayout(new GridLayout(8, 1, 5, 5));
 
         contentPanel.add(new JLabel("Name:"));
         contentPanel.add(nameField);
@@ -39,11 +44,10 @@ public class LabelView extends JFrame {
         contentPanel.add(new JLabel("Amount:"));
         contentPanel.add(amountField);
 
-        contentPanel.add(new JLabel("Date (yyyy-MM-dd):)"));
-        contentPanel.add(dateField);
+        // REMOVED: Date input UI components
 
-        contentPanel.add(new JLabel("Color:"));
-        contentPanel.add(colorField);
+        contentPanel.add(new JLabel("Options / Color:"));
+        contentPanel.add(colorBox); // Added ComboBox here
 
         contentPanel.add(new JLabel("Description:"));
         contentPanel.add(descriptionField);
@@ -61,55 +65,57 @@ public class LabelView extends JFrame {
 
         add(panel);
 
+        // PRE-FILL DATA (If editing)
         if (existingLabel != null) {
             nameField.setText(existingLabel.getLabelName());
             amountField.setText(String.valueOf(existingLabel.getAmount()));
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            dateField.setText(sdf.format(existingLabel.getLabelDate()));
+            // REMOVED: Date formatting logic
 
-            colorField.setText(existingLabel.getColor());
+            colorBox.setSelectedItem(existingLabel.getColor()); // Set selected dropdown item
             descriptionField.setText(existingLabel.getDescription());
         }
 
+        // SAVE ACTION
         saveButton.addActionListener(e -> {
-            if (existingLabel == null) {
-                try {
-                    String name = nameField.getText().trim();
-                    double amount = Double.parseDouble(amountField.getText().trim());
-                    String color = colorField.getText().trim();
-                    String desc = descriptionField.getText().trim();
+            try {
+                String name = nameField.getText().trim();
+                double amount = Double.parseDouble(amountField.getText().trim());
+                String color = (String) colorBox.getSelectedItem(); // Get from Dropdown
+                String desc = descriptionField.getText().trim();
 
-                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateField.getText().trim());
+                String result;
 
-                    String result = labelController.createLabel(name, amount, date, desc, color, userId);
-                    JOptionPane.showMessageDialog(this, result);
+                if (existingLabel == null) {
+                    // CREATE NEW
+                    // Note: Removed 'date' argument to match LabelController
+                    result = labelController.createLabel(name, amount, desc, color, userId);
+                } else {
+                    // EDIT EXISTING
+                    existingLabel.setLabelName(name);
+                    existingLabel.setAmount(amount);
+                    existingLabel.setColor(color);
+                    existingLabel.setDescription(desc);
+                    // REMOVED: existingLabel.setLabelDate(date);
 
-                    if (result.equals("Label created successfully.")) {
-                        dispose();
-                    }
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Invalid input: " + ex.getMessage());
+                    result = labelController.editLabel(existingLabel);
                 }
-            }else{
-                try {
-                existingLabel.setLabelName(nameField.getText().trim());
-                existingLabel.setAmount(Double.parseDouble(amountField.getText().trim()));
-                existingLabel.setColor(colorField.getText().trim());
-                existingLabel.setDescription(descriptionField.getText().trim());
 
-                Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateField.getText().trim());
-                existingLabel.setLabelDate(date);
-
-                String result = labelController.editLabel(existingLabel);
                 JOptionPane.showMessageDialog(this, result);
-                dispose();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Invalid input: " + ex.getMessage());
+
+                // CLOSE WINDOW ON SUCCESS
+                if (result.equals("Label created successfully.") || result.equals("Label updated successfully.")) {
+                    dispose();
                 }
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Amount must be a valid number.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
             }
         });
 
+        // DELETE ACTION
         deleteButton.addActionListener(e -> {
             if (existingLabel == null) {
                 JOptionPane.showMessageDialog(this, "No label to delete.");
@@ -135,5 +141,3 @@ public class LabelView extends JFrame {
         cancelButton.addActionListener(e -> dispose());
     }
 }
-
-

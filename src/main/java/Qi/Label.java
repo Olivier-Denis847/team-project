@@ -10,22 +10,21 @@ import java.util.Date;
 public class Label {
     private int labelId;
     private String labelName;
-    private Date labelDate;
     private double amount;
     private String description;
-    private String color;
+    private String colorHex;
     private int userid;
-    public Label(int labelId, String labelName, Date labelDate, String color,
+    public Label(int labelId, String labelName, String colorHex,
                  int userid, double amount, String description) {
         this.labelId = labelId;
         this.labelName = labelName;
-        this.labelDate = labelDate;
-        this.color = color;
+        this.colorHex = colorHex;
         this.description = description;
         this.userid = userid;
         this.amount = amount;
 
     }
+
     public int getLabelId() {
         return labelId;
     }
@@ -41,21 +40,12 @@ public class Label {
     public void setLabelName(String labelName) {
         this.labelName = labelName;
     }
-
-    public Date getLabelDate() {
-        return labelDate;
-    }
-
-    public void setLabelDate(Date labelDate) {
-        this.labelDate = labelDate;
-    }
-
     public String getColor() {
-        return color;
+        return colorHex;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setColor(String colorHex) {
+        this.colorHex = colorHex;
     }
 
     public void setAmount(double amount) {
