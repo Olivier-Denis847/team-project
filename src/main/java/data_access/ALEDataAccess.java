@@ -1,12 +1,15 @@
-package Qi;
+package data_access;
+
+import entity.Label;
+import use_case.ALEDataAccessInterface;
+import use_case.AddLabelExpense;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.*;
 
 public class ALEDataAccess implements ALEDataAccessInterface {
 
-    private Map<Integer,AddLabelExpense> ale =  new HashMap<>();
+    private Map<Integer, AddLabelExpense> ale =  new HashMap<>();
 
     public ALEDataAccess() {
         ale.put(1, new AddLabelExpense(1, 30.00, true));

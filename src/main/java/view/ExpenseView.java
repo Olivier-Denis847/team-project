@@ -1,14 +1,16 @@
-package Qi;
+package view;
+
+import entity.Label;
+import interface_adapter.Label.LabelController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.List;
 
 public class ExpenseView extends JFrame {
 
-    private JList<Label> labelList;
-    private DefaultListModel<Label> labelListModel;
+    private JList<entity.Label> labelList;
+    private DefaultListModel<entity.Label> labelListModel;
 
     private JButton addLabelButton = new JButton("Add Label");
     private JButton editLabelButton = new JButton("Edit Selected");
@@ -29,8 +31,8 @@ public class ExpenseView extends JFrame {
         labelListModel = new DefaultListModel<>();
 
         // load labels
-        List<Label> labels = labelController.getAllLabels(userId);
-        for (Label l : labels) {
+        List<entity.Label> labels = labelController.getAllLabels(userId);
+        for (entity.Label l : labels) {
             labelListModel.addElement(l);
         }
 
@@ -42,8 +44,8 @@ public class ExpenseView extends JFrame {
                     JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Label) {
-                    Label lbl = (Label) value;
+                if (value instanceof entity.Label) {
+                    entity.Label lbl = (entity.Label) value;
                     label.setText(lbl.getLabelName());
 
                     // Try to set color
@@ -107,7 +109,7 @@ public class ExpenseView extends JFrame {
 
         // EDIT LABEL
         editLabelButton.addActionListener(e -> {
-            Label selected = labelList.getSelectedValue();
+            entity.Label selected = labelList.getSelectedValue();
             if (selected == null) {
                 JOptionPane.showMessageDialog(this, "Please select a label to edit.");
                 return;
@@ -125,7 +127,7 @@ public class ExpenseView extends JFrame {
 
         // DELETE LABEL
         deleteLabelButton.addActionListener(e -> {
-            Label selected = labelList.getSelectedValue();
+            entity.Label selected = labelList.getSelectedValue();
             if (selected == null) {
                 JOptionPane.showMessageDialog(this, "Please select a label to delete.");
                 return;
@@ -149,7 +151,7 @@ public class ExpenseView extends JFrame {
     //---------------------- REFRESH LIST ----------------------
     private void refreshList(LabelController labelController, int userId) {
         labelListModel.clear();
-        List<Label> labels = labelController.getAllLabels(userId);
+        List<entity.Label> labels = labelController.getAllLabels(userId);
 
         for (Label l : labels) {
             labelListModel.addElement(l);

@@ -1,4 +1,7 @@
-package Qi;
+package data_access;
+
+import entity.Label;
+import use_case.LabelDataAccessInterface;
 
 import java.util.*;
 import java.util.stream.Collectors;

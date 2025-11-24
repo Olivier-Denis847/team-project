@@ -1,4 +1,6 @@
-package Qi;
+package use_case;
+
+import entity.Label;
 
 import java.util.List;
 

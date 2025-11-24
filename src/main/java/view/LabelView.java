@@ -1,9 +1,10 @@
-package Qi;
+package view;
+
+import entity.Label;
+import interface_adapter.Label.LabelController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class LabelView extends JFrame {
 
