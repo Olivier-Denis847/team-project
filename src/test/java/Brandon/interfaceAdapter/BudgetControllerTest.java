@@ -1,7 +1,8 @@
 package Brandon.interfaceAdapter;
 
-import Brandon.useCase.BudgetInputBoundary;
-import Brandon.useCase.BudgetInputData;
+import interface_adapter.budget.BudgetController;
+import use_case.budget.BudgetInputBoundary;
+import use_case.budget.BudgetInputData;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

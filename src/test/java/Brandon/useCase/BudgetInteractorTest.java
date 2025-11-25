@@ -1,9 +1,10 @@
 package Brandon.useCase;
 
-import Brandon.entities.Budget;
+import entity.Budget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import use_case.budget.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

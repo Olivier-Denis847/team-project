@@ -1,5 +1,6 @@
 package Brandon.interfaceAdapter;
 
+import interface_adapter.budget.BudgetViewModel;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
