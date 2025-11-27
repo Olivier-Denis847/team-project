@@ -1,12 +1,11 @@
 package entity;
-
 import java.util.Date;
 
 
 /*
- * It is representing user, which can add the label for expense according to the object name, date,
- * and amount.
- **/
+* It is representing user, which can add the label for expense according to the object name, date,
+* and amount.
+**/
 
 public class Label {
     private int labelId;

@@ -2,7 +2,9 @@ package data_access;
 
 import entity.Transaction;
 import entity.Label;
-import add_transaction.use_case.addtransaction.TransactionDataAccessInterface;
+
+import use_case.add_transaction.TransactionDataAccessInterface;
+
 
 import java.io.*;
 import java.util.*;
@@ -114,6 +116,6 @@ public class JsonTransactionDataAccessObject implements TransactionDataAccessInt
     // we do not need this method.
     @Override
     public List<Transaction> getTransactions() {
-    return getAll();
+        return getAll();
     }
 }
