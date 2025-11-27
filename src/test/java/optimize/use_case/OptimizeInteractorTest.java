@@ -71,11 +71,8 @@ class OptimizeInteractorTest {
         interactor.execute(inputData);
 
         // Assert: failureView should be called
-        verify(outputBoundary).failureView("error");
+        verify(outputBoundary).failureView("An issue occurred with the API");
 
-        // But note: your current code STILL calls successView after failureView.
-        // This asserts the current (buggy) behavior:
-        verify(outputBoundary).successView(any());
     }
 
     @Test

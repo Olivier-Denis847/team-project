@@ -27,11 +27,13 @@ public class OptimizeInteractor implements OptimizeInputBoundary{
 
         final String response = apiInterface.generateText(prompt);
         if (response.equals("failed")) {
-            outputBoundary.failureView("error");
+            outputBoundary.failureView("An issue occurred with the API");
+        } else if (response.equals("IOException")) {
+            outputBoundary.failureView("An issue occurred with the input");
+        } else {
+            final OptimizeOutputData outputData = new OptimizeOutputData(response);
+            outputBoundary.successView(outputData);
         }
-
-        final OptimizeOutputData outputData = new OptimizeOutputData(response);
-        outputBoundary.successView(outputData);
     }
 
     @Override
