@@ -13,7 +13,7 @@ public class OptimizeApp {
     public static void main(String[] args) {
         OptimizeViewModel viewModel = new OptimizeViewModel();
         OptimizePresenter presenter = new OptimizePresenter(viewModel);
-        OptimizeDataAccess dataAccess = new OptimizeDataAccess();
+        OptimizeDataAccess dataAccess = OptimizeDataAccess.getInstance();
         OptimizeInteractor interactor = new OptimizeInteractor(dataAccess, presenter);
         OptimizeController controller = new OptimizeController(interactor);
         OptimizeView optimizeView = new OptimizeView(viewModel);
