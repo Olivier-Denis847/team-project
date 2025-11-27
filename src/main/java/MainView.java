@@ -38,21 +38,16 @@ public class MainView extends JFrame {
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
 
         //ToDo Call the add expense use case
-        JButton addExp = new JButton("Add Expense");
-        addExp.addActionListener(e -> {
-            System.out.println("Add expense use case");
+        JButton addTransaction = new JButton("Add Transaction");
+        addTransaction.addActionListener(e -> {
+            System.out.println("Add transaction use case");
         });
 
-        JButton addInc = new JButton("Add Income");
-        addInc.addActionListener(e -> {
-            System.out.println("Add income use case");
-        });
 
-        addExp.setPreferredSize(new Dimension(280, 100));
-        addInc.setPreferredSize(new Dimension(280, 100));
+        addTransaction.setPreferredSize(new Dimension(380, 100));
 
-        bottomPanel.add(addExp);
-        bottomPanel.add(addInc);
+
+        bottomPanel.add(addTransaction);
         return bottomPanel;
     }
 
