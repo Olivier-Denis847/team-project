@@ -1,7 +1,7 @@
-package add_transaction.view;
+package view;
 
-import add_transaction.interface_adapter.AddTransaction.AddTransactionController;
-import add_transaction.interface_adapter.AddTransaction.AddTransactionViewModel;
+import interface_adapter.add_transaction.AddTransactionController;
+import interface_adapter.add_transaction.AddTransactionViewModel;
 
 import javax.swing.*;
 import java.awt.*;

@@ -5,20 +5,13 @@ import interface_adapter.label.LabelController;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class LabelView extends JFrame {
 
-    private JTextField nameField =  new JTextField(20);
-    private JTextField amountField = new JTextField(20);
-    private JTextArea descriptionField = new JTextArea(4, 20);
-    private JTextField dateField = new JTextField(20);
-    private JTextField colorField = new JTextField(20);
-
-    private JButton saveButton = new JButton("Save");
-    private JButton cancelButton = new JButton("Cancel");
-    private JButton deleteButton = new JButton("Delete");
+    private final JTextField nameField =  new JTextField(20);
+    private final JTextField amountField = new JTextField(20);
+    private final JTextArea descriptionField = new JTextArea(4, 20);
+    private final JTextField colorField = new JTextField(20);
 
 
     public LabelView(LabelController labelController, Label existingLabel, int userId) {
@@ -40,9 +33,6 @@ public class LabelView extends JFrame {
         contentPanel.add(new JLabel("Amount:"));
         contentPanel.add(amountField);
 
-        contentPanel.add(new JLabel("Date (yyyy-MM-dd):)"));
-        contentPanel.add(dateField);
-
         contentPanel.add(new JLabel("Color:"));
         contentPanel.add(colorField);
 
@@ -54,8 +44,11 @@ public class LabelView extends JFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
+        JButton saveButton = new JButton("Save");
         buttonPanel.add(saveButton);
+        JButton deleteButton = new JButton("Delete");
         buttonPanel.add(deleteButton);
+        JButton cancelButton = new JButton("Cancel");
         buttonPanel.add(cancelButton);
 
         panel.add(buttonPanel, BorderLayout.SOUTH);
@@ -65,10 +58,6 @@ public class LabelView extends JFrame {
         if (existingLabel != null) {
             nameField.setText(existingLabel.getLabelName());
             amountField.setText(String.valueOf(existingLabel.getAmount()));
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            dateField.setText(sdf.format(existingLabel.getLabelDate()));
-
             colorField.setText(existingLabel.getColor());
             descriptionField.setText(existingLabel.getDescription());
         }
@@ -81,9 +70,7 @@ public class LabelView extends JFrame {
                     String color = colorField.getText().trim();
                     String desc = descriptionField.getText().trim();
 
-                    Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateField.getText().trim());
-
-                    String result = labelController.createLabel(name, amount, date, desc, color, userId);
+                    String result = labelController.createLabel(name, amount, desc, color, userId);
                     JOptionPane.showMessageDialog(this, result);
 
                     if (result.equals("Label created successfully.")) {
@@ -98,9 +85,6 @@ public class LabelView extends JFrame {
                 existingLabel.setAmount(Double.parseDouble(amountField.getText().trim()));
                 existingLabel.setColor(colorField.getText().trim());
                 existingLabel.setDescription(descriptionField.getText().trim());
-
-                Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateField.getText().trim());
-                existingLabel.setLabelDate(date);
 
                 String result = labelController.editLabel(existingLabel);
                 JOptionPane.showMessageDialog(this, result);

@@ -61,22 +61,21 @@ public class GraphApp {
 
             // Define Categories
             // Note: The 'new Date()' here is just for the Label creation, not the transaction itself.
-            Label housing = new Label(1, "Housing", new Date(), "blue", 1, 2500.0, "Mortgage/Rent");
-            Label groceries = new Label(2, "Groceries", new Date(), "green", 1, 200.0, "Supermarket");
-            Label utilities = new Label(3, "Utilities", new Date(), "orange", 1, 150.0, "Bills");
-            Label transport = new Label(4, "Transport", new Date(), "gray", 1, 60.0, "Gas/Car");
-            Label healthcare = new Label(5, "Healthcare", new Date(), "red", 1, 100.0, "Medical");
-            Label education = new Label(6, "Education", new Date(), "purple", 1, 500.0, "School/Kids");
-            Label dining = new Label(7, "Dining Out", new Date(), "pink", 1, 80.0, "Restaurants");
-            Label shopping = new Label(8, "Shopping", new Date(), "cyan", 1, 100.0, "Clothing/Misc");
-            Label incomePrimary = new Label(9, "Salary (Pri)", new Date(), "darkgreen", 1, 3500.0, "Main Job");
-            Label incomeSec = new Label(10, "Salary (Sec)", new Date(), "lightgreen", 1, 1200.0, "Part-time/Gig");
+            Label housing = new Label(1, "Housing", "blue", 1, 2500.0, "Mortgage/Rent");
+            Label groceries = new Label(2, "Groceries", "green", 1, 200.0, "Supermarket");
+            Label utilities = new Label(3, "Utilities",  "orange", 1, 150.0, "Bills");
+            Label transport = new Label(4, "Transport",  "gray", 1, 60.0, "Gas/Car");
+            Label healthcare = new Label(5, "Healthcare",  "red", 1, 100.0, "Medical");
+            Label education = new Label(6, "Education",  "purple", 1, 500.0, "School/Kids");
+            Label dining = new Label(7, "Dining Out",  "pink", 1, 80.0, "Restaurants");
+            Label shopping = new Label(8, "Shopping",  "cyan", 1, 100.0, "Clothing/Misc");
+            Label incomePrimary = new Label(9, "Salary (Pri)",  "darkgreen", 1, 3500.0, "Main Job");
+            Label incomeSec = new Label(10, "Salary (Sec)",  "lightgreen", 1, 1200.0, "Part-time/Gig");
 
             Calendar cal = Calendar.getInstance();
             // Start Date: January 1, 2022
             cal.set(2022, Calendar.JANUARY, 1);
 
-            // Reset time to midnight to avoid weird time-of-day issues
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
             cal.set(Calendar.SECOND, 0);

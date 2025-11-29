@@ -4,6 +4,7 @@ import entity.Label;
 import use_case.label.LabelDataAccessInterface;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LabelDataAccess implements LabelDataAccessInterface {
 
@@ -13,7 +14,6 @@ public class LabelDataAccess implements LabelDataAccessInterface {
     @Override
     public void updateLabel(Label label) {
         db.put(label.getLabelId(), label);
-
     }
 
     @Override
@@ -27,8 +27,17 @@ public class LabelDataAccess implements LabelDataAccessInterface {
         return db.get(id);
     }
 
+    // FIXED: Returns a List (for the View)
     @Override
-    public boolean userHasLabelName(int userid, String labelName) {
+    public List<Label> getAllLabelsByUser(int userid) {
+        return db.values().stream()
+                .filter(l -> l.getUserId() == userid)
+                .collect(Collectors.toList());
+    }
+
+    // NEW: Returns a boolean (for the Use Case validation)
+    @Override
+    public boolean labelExists(int userid, String labelName) {
         return db.values().stream()
                 .anyMatch(l ->
                         l.getUserId() == userid &&
@@ -39,6 +48,5 @@ public class LabelDataAccess implements LabelDataAccessInterface {
     @Override
     public void deleteLabel(int labelId) {
         db.remove(labelId);
-
     }
 }
