@@ -114,6 +114,6 @@ public class JsonTransactionDataAccessObject implements TransactionDataAccessInt
     // we do not need this method.
     @Override
     public List<Transaction> getTransactions() {
-    return getAll();
+        return getAll();
     }
 }

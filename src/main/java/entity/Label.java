@@ -1,31 +1,28 @@
 package entity;
-import java.util.Date;
 
 
 /*
- * It is representing user, which can add the label for expense according to the object name, date,
- * and amount.
- **/
-
+* It is representing user, which can add the label for expense according to the object name, date,
+* and amount.
+**/
 public class Label {
     private int labelId;
     private String labelName;
-    private Date labelDate;
     private double amount;
     private String description;
-    private String color;
-    private int userid;
-    public Label(int labelId, String labelName, Date labelDate, String color,
+    private String color; // color will be stored as hex
+    private final int userid;
+    public Label(int labelId, String labelName, String color,
                  int userid, double amount, String description) {
         this.labelId = labelId;
         this.labelName = labelName;
-        this.labelDate = labelDate;
         this.color = color;
         this.description = description;
         this.userid = userid;
         this.amount = amount;
 
     }
+
     public int getLabelId() {
         return labelId;
     }
@@ -41,15 +38,6 @@ public class Label {
     public void setLabelName(String labelName) {
         this.labelName = labelName;
     }
-
-    public Date getLabelDate() {
-        return labelDate;
-    }
-
-    public void setLabelDate(Date labelDate) {
-        this.labelDate = labelDate;
-    }
-
     public String getColor() {
         return color;
     }

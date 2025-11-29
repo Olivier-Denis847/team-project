@@ -7,6 +7,7 @@ import use_case.add_transaction.AddTransactionInteractor;
 import use_case.add_transaction.AddTransactionOutputBoundary;
 import use_case.add_transaction.TransactionDataAccessInterface;
 import view.add_transaction.AddTransactionView;
+import app.GraphApp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -134,7 +135,7 @@ public class MainView extends JFrame {
                         break;
                     }
                     case "Graph": {
-                        System.out.println("Graph use case");
+                        GraphApp.showGraphView();
                         break;
                     }
                     case "Optimize": {

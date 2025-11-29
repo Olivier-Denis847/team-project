@@ -23,3 +23,11 @@ User Stories:
 API Usage: GeminiAPI
 Gemini is a Generative AI. We will use its ability to give optimized spending suggestions, given a list of expenses 
 
+##ToDo (Not user stories):
+- Home-page view
+- File and package structure 
+- Merge all the user stories into one branch
+- Central database to read/write expenses and labels to
+- Data access object for the database
+- Slideshow and presentation
+
