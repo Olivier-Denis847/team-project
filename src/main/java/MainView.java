@@ -53,13 +53,11 @@ public class MainView extends JFrame {
     private JPanel createButtonsPanel() {
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
 
-        //ToDo Call the add expense use case
         JButton addTransaction = new JButton("Add Transaction");
         addTransaction.addActionListener(e -> {
             if (addTransactionView != null) {
                 addTransactionView.setVisible(true);
             }
-            System.out.println("Add expense use case");
         });
 
 
