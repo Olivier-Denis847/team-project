@@ -1,4 +1,4 @@
-package app;
+package data_access;
 
 import entity.Label;
 import entity.Transaction;
