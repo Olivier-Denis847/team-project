@@ -10,7 +10,10 @@ import view.add_transaction.AddTransactionView;
 
 
 public class TransactionApp {
-    public static void main(String[] args) {
+
+
+
+    public static void ShowTransactionApp() {
         AddTransactionViewModel viewModel = new AddTransactionViewModel();
         AddTransactionPresenter presenter = new AddTransactionPresenter(viewModel);
 
@@ -25,5 +28,6 @@ public class TransactionApp {
 
         AddTransactionView view = new AddTransactionView(viewModel);
         view.setController(controller);
+        view.setVisible(true);
     }
 }
