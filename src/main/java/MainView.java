@@ -1,3 +1,5 @@
+import app.GraphApp;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -122,7 +124,7 @@ public class MainView extends JFrame {
                         break;
                     }
                     case "Graph": {
-                        System.out.println("Graph use case");
+                        GraphApp.showGraphView();
                         break;
                     }
                     case "Optimize": {
