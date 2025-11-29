@@ -1,5 +1,6 @@
 [
   {"id":1,"amount":100.0,"type":"Income","note":"aaa","date":"1764395934203"},
   {"id":2,"amount":9999.0,"type":"Expense","note":"nnnn","date":"1764395958110"},
-  {"id":1,"amount":11000.0,"type":"Income","note":"hhhhh","date":"1764396037356"}
+  {"id":1,"amount":11000.0,"type":"Income","note":"hhhhh","date":"1764396037356"},
+  {"id":1,"amount":1000.0,"type":"Income","note":"aaaa","date":"1764399524291"}
 ]

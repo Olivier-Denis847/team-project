@@ -1,13 +1,6 @@
-import data_access.JsonTransactionDataAccessObject;
-import interface_adapter.add_transaction.AddTransactionController;
-import interface_adapter.add_transaction.AddTransactionPresenter;
-import interface_adapter.add_transaction.AddTransactionViewModel;
-import use_case.add_transaction.AddTransactionInputBoundary;
-import use_case.add_transaction.AddTransactionInteractor;
-import use_case.add_transaction.AddTransactionOutputBoundary;
-import use_case.add_transaction.TransactionDataAccessInterface;
-import view.add_transaction.AddTransactionView;
+
 import app.GraphApp;
+import app.TransactionApp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,11 +8,6 @@ import java.awt.*;
 public class MainView extends JFrame {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
-    private AddTransactionView addTransactionView;
-
-    public void setAddTransactionView(AddTransactionView view) {
-        this.addTransactionView = view;
-    }
 
 
     public MainView(MainInputData data) {
@@ -56,9 +44,7 @@ public class MainView extends JFrame {
 
         JButton addTransaction = new JButton("Add Transaction");
         addTransaction.addActionListener(e -> {
-            if (addTransactionView != null) {
-                addTransactionView.setVisible(true);
-            }
+            TransactionApp.ShowTransactionApp();
         });
 
 
@@ -201,14 +187,6 @@ public class MainView extends JFrame {
     public static void main(String[] args) {
         //ToDo Get incomes/expenses from a database
 
-        AddTransactionViewModel vm = new AddTransactionViewModel();
-        TransactionDataAccessInterface repo = new JsonTransactionDataAccessObject("transactions.json");
-        AddTransactionOutputBoundary presenter = new AddTransactionPresenter(vm);
-        AddTransactionInputBoundary interactor = new AddTransactionInteractor(presenter, repo);
-        AddTransactionController controller = new AddTransactionController(interactor);
-
-        AddTransactionView addTransactionView = new AddTransactionView(vm);
-        addTransactionView.setController(controller);
 
         String[] expenses = {"Exp 1", "Exp 2", "Exp 3"};
         String[] incomes = {"Inc 1", "Inc 2", "Inc 3"};
@@ -216,7 +194,6 @@ public class MainView extends JFrame {
         float spent = 750.10F;
         MainInputData data = new MainInputData(expenses, incomes, money, spent);
         MainView ui = new MainView(data);
-        ui.setAddTransactionView(addTransactionView);
         ui.setVisible(true);
     }
 }
