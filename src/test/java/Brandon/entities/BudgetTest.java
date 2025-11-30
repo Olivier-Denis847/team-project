@@ -9,7 +9,7 @@ class BudgetTest {
 
     @Test
     void remainingAndStatusChangeWithSpending() {
-        Budget b = new Budget("01-2025");
+        Budget b = new Budget("01-2025", 500, 340);
         b.setLimit(100f);
 
         b.setTotalSpent(40f);
@@ -27,7 +27,7 @@ class BudgetTest {
 
     @Test
     void notesAndLastUpdatedStoreValues() {
-        Budget b = new Budget("02-2025");
+        Budget b = new Budget("02-2025", 800, 500);
         b.setNotes("some note");
         b.setLastUpdated("2025-02-01 10:00 EST");
 

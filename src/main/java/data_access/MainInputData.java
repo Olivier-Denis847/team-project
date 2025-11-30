@@ -1,3 +1,5 @@
+package data_access;
+
 public class MainInputData {
     private final String[] expenses;
     private final String[] incomes;
