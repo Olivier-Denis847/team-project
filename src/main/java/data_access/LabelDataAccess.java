@@ -4,7 +4,6 @@ import entity.Label;
 import use_case.label.LabelDataAccessInterface;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class LabelDataAccess implements LabelDataAccessInterface {
 
@@ -30,23 +29,32 @@ public class LabelDataAccess implements LabelDataAccessInterface {
     // FIXED: Returns a List (for the View)
     @Override
     public List<Label> getAllLabelsByUser(int userid) {
-        return db.values().stream()
-                .filter(l -> l.getUserId() == userid)
-                .collect(Collectors.toList());
+        return new ArrayList<>(db.values());
     }
 
     // NEW: Returns a boolean (for the Use Case validation)
     @Override
     public boolean labelExists(int userid, String labelName) {
         return db.values().stream()
-                .anyMatch(l ->
-                        l.getUserId() == userid &&
-                                l.getLabelName().equalsIgnoreCase(labelName)
-                );
+                .anyMatch(l -> l.getLabelName().equalsIgnoreCase(labelName));
     }
 
     @Override
     public void deleteLabel(int labelId) {
         db.remove(labelId);
+    }
+
+    @Override
+    public void assignLabelExpense(int transactionId, Label label) {
+        // This is an in-memory implementation
+        // For real persistence, this should be handled by FinanceDataAccess
+        // This method is here for interface compliance
+    }
+
+    @Override
+    public void removeLabelFromExpense(int transactionId, int labelId) {
+        // This is an in-memory implementation
+        // For real persistence, this should be handled by FinanceDataAccess
+        // This method is here for interface compliance
     }
 }

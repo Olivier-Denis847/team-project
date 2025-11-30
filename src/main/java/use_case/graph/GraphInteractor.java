@@ -26,6 +26,7 @@ public class GraphInteractor implements GraphInputBoundary {
         String selectedType = graphInputData.getTransactionType();
         Map<Integer, Float> bar = new HashMap<>();
         Map<String, Float> pie = new HashMap<>();
+        Map<String, String> labelColors = new HashMap<>(); // Map label names to colors
         List<String> alerts = new ArrayList<>();
 
         // initalize to Day on first load
@@ -82,7 +83,7 @@ public class GraphInteractor implements GraphInputBoundary {
             if (selectedRange.equals("Day")) {
                 if (year == nowYear && month == nowMonth) {
                     addToBar(bar, day, transaction);
-                    addToPie(pie, labels, transaction);
+                    addToPie(pie, labelColors, labels, transaction);
                 }
             }
 
@@ -90,13 +91,13 @@ public class GraphInteractor implements GraphInputBoundary {
                 if (year == nowYear) {
                     // month is zero index in Calendar
                     addToBar(bar, month + 1, transaction);
-                    addToPie(pie, labels, transaction);
+                    addToPie(pie, labelColors, labels, transaction);
                 }
             }
 
             else { // Year
                 addToBar(bar, year, transaction);
-                addToPie(pie, labels, transaction);
+                addToPie(pie, labelColors, labels, transaction);
             }
 
         }
@@ -107,6 +108,7 @@ public class GraphInteractor implements GraphInputBoundary {
                 selectedType,
                 bar,
                 pie,
+                labelColors,
                 alerts);
         graphPresenter.prepareGraph(outputData);
     }
@@ -115,14 +117,22 @@ public class GraphInteractor implements GraphInputBoundary {
      * helper method to process data into pie map
      * 
      * @param pie
+     * @param labelColors
      * @param labels
      * @param t
      */
-    private void addToPie(Map<String, Float> pie, List<Label> labels, Transaction t) {
-        if (labels == null || labels.isEmpty())
+    private void addToPie(Map<String, Float> pie, Map<String, String> labelColors, List<Label> labels, Transaction t) {
+        if (labels == null || labels.isEmpty()) {
             return;
+        }
         for (Label label : labels) {
             String labelName = label.getLabelName();
+
+            // Store the color for this label
+            if (!labelColors.containsKey(labelName)) {
+                labelColors.put(labelName, label.getColor());
+            }
+
             if (!pie.containsKey(labelName))
                 pie.put(labelName, t.getAmount());
             else

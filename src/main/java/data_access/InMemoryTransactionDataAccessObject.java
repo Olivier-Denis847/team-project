@@ -1,17 +1,15 @@
 package data_access;
 
 import entity.Transaction;
+import entity.Label;
 
 import use_case.add_transaction.TransactionDataAccessInterface;
-
-
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryTransactionDataAccessObject implements TransactionDataAccessInterface {
     private final List<Transaction> transactions = new ArrayList<>();
-
 
     @Override
     public void save(Transaction transaction) {
@@ -23,9 +21,14 @@ public class InMemoryTransactionDataAccessObject implements TransactionDataAcces
         return List.of();
     }
 
-
     @Override
     public List<Transaction> getTransactions() {
         return transactions;
+    }
+
+    @Override
+    public Label getUncategorizedLabel() {
+        // Return a default Uncategorized label
+        return new Label(0, "Uncategorized", "#808080", "Default category");
     }
 }

@@ -5,7 +5,6 @@ import entity.Label;
 
 import use_case.add_transaction.TransactionDataAccessInterface;
 
-
 import java.io.*;
 import java.util.*;
 
@@ -32,17 +31,21 @@ public class JsonTransactionDataAccessObject implements TransactionDataAccessInt
 
         try {
             String content = readFile();
-            if (content.trim().isEmpty()) return list;
+            if (content.trim().isEmpty())
+                return list;
 
             content = content.trim();
-            if (content.startsWith("[")) content = content.substring(1);
-            if (content.endsWith("]")) content = content.substring(0, content.length() - 1);
+            if (content.startsWith("["))
+                content = content.substring(1);
+            if (content.endsWith("]"))
+                content = content.substring(0, content.length() - 1);
 
             String[] objects = content.split("(?<=}),");
 
             for (String obj : objects) {
                 obj = obj.trim();
-                if (obj.endsWith(",")) obj = obj.substring(0, obj.length() - 1);
+                if (obj.endsWith(","))
+                    obj = obj.substring(0, obj.length() - 1);
 
                 Map<String, String> map = parseJsonObject(obj);
 
@@ -55,7 +58,7 @@ public class JsonTransactionDataAccessObject implements TransactionDataAccessInt
 
                 list.add(new Transaction(id, amount, new ArrayList<Label>(), note, date, type));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
@@ -95,15 +98,15 @@ public class JsonTransactionDataAccessObject implements TransactionDataAccessInt
             pw.println("[");
             for (int i = 0; i < list.size(); i++) {
                 Transaction transaction = list.get(i);
-                String json =
-                        "  {" +
-                                "\"id\":" + transaction.getId() + "," +
-                                "\"amount\":" + transaction.getAmount() + "," +
-                                "\"type\":\"" + transaction.getType() + "\"," +
-                                "\"note\":\"" + transaction.getNote() + "\"," +
-                                "\"date\":\"" + transaction.getDate().getTime() + "\"" +
-                                "}";
-                if (i < list.size() - 1) json += ",";
+                String json = "  {" +
+                        "\"id\":" + transaction.getId() + "," +
+                        "\"amount\":" + transaction.getAmount() + "," +
+                        "\"type\":\"" + transaction.getType() + "\"," +
+                        "\"note\":\"" + transaction.getNote() + "\"," +
+                        "\"date\":\"" + transaction.getDate().getTime() + "\"" +
+                        "}";
+                if (i < list.size() - 1)
+                    json += ",";
                 pw.println(json);
             }
             pw.println("]");
@@ -117,5 +120,11 @@ public class JsonTransactionDataAccessObject implements TransactionDataAccessInt
     @Override
     public List<Transaction> getTransactions() {
         return getAll();
+    }
+
+    @Override
+    public Label getUncategorizedLabel() {
+        // Return a default Uncategorized label
+        return new Label(0, "Uncategorized", "#808080", "Default category");
     }
 }

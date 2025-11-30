@@ -1,4 +1,5 @@
 package use_case.add_transaction;
+
 import entity.Transaction;
 import entity.Label;
 import java.util.*;
@@ -8,7 +9,7 @@ public class AddTransactionInteractor implements AddTransactionInputBoundary {
     private final TransactionDataAccessInterface dataAccess;
     private int nextId = 1;
 
-    public AddTransactionInteractor(AddTransactionOutputBoundary presenter,  TransactionDataAccessInterface dataAccess) {
+    public AddTransactionInteractor(AddTransactionOutputBoundary presenter, TransactionDataAccessInterface dataAccess) {
         this.presenter = presenter;
         this.dataAccess = dataAccess;
     }
@@ -24,13 +25,19 @@ public class AddTransactionInteractor implements AddTransactionInputBoundary {
             presenter.prepareFailureView("the amount must be greater than zero\n");
             return;
         }
-        //delete this if branch later
+        // delete this if branch later
         if (!type.equalsIgnoreCase("income") && !type.equalsIgnoreCase("expense")) {
             presenter.prepareFailureView("only Income or Expense is supported");
             return;
         }
 
-        Transaction t = new Transaction(nextId++, amount, new ArrayList<Label>(), note, date, type);
+        // Create transaction with Uncategorized label by default
+        List<Label> defaultLabels = new ArrayList<>();
+        Label uncategorizedLabel = dataAccess.getUncategorizedLabel();
+        if (uncategorizedLabel != null) {
+            defaultLabels.add(uncategorizedLabel);
+        }
+        Transaction t = new Transaction(nextId++, amount, defaultLabels, note, date, type);
 
         dataAccess.save(t);
         AddTransactionResponseModel responseModel = new AddTransactionResponseModel(
@@ -39,7 +46,6 @@ public class AddTransactionInteractor implements AddTransactionInputBoundary {
                 type,
                 note,
                 t.getDate().toString());
-
 
         presenter.prepareSuccessView(responseModel);
     }

@@ -1,6 +1,7 @@
 package use_case.add_transaction;
 
 import entity.Transaction;
+import entity.Label;
 import java.util.List;
 
 public interface TransactionDataAccessInterface {
@@ -9,4 +10,6 @@ public interface TransactionDataAccessInterface {
     List<Transaction> getAll();
 
     List<Transaction> getTransactions();
+
+    Label getUncategorizedLabel();
 }

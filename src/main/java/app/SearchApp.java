@@ -1,11 +1,13 @@
 package app;
 
+import data_access.FinanceDataAccess;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class SearchApp {
 
-    public static void start() {
+    public static void start(FinanceDataAccess dataAccess) {
         SwingUtilities.invokeLater(() -> {
 
             JFrame frame = new JFrame("Search");
@@ -50,11 +52,11 @@ public class SearchApp {
 
                 switch (text) {
                     case "budget" -> {
-                        BudgetApp.start();
+                        BudgetApp.start(dataAccess);
                         frame.dispose();
                     }
                     case "graph" -> {
-                        GraphApp.showGraphView();
+                        GraphApp.start(dataAccess);
                         frame.dispose();
                     }
                     case "optimize" -> {

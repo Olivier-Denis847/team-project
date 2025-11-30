@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface LabelDataAccessInterface {
     void updateLabel(Label label);
+
     void createLabel(Label label);
+
     Label getLabelById(int labelId);
 
     // Updated signature to match the implementation
@@ -16,4 +18,9 @@ public interface LabelDataAccessInterface {
     boolean labelExists(int userid, String labelName);
 
     void deleteLabel(int labelId);
+
+    void assignLabelExpense(int transactionId, Label label);
+
+    // Remove a specific label from a transaction
+    void removeLabelFromExpense(int transactionId, int labelId);
 }

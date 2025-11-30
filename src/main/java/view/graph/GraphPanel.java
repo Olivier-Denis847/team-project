@@ -27,6 +27,7 @@ public class GraphPanel extends JPanel implements ActionListener, PropertyChange
 
     private DefaultPieDataset<String> pieDataset;
     private DefaultCategoryDataset barDataset;
+    private org.jfree.chart.plot.PiePlot<String> piePlot; // Store reference to pie plot
 
     public GraphPanel(GraphViewModel gvm) {
         // graph panel settings
@@ -180,9 +181,9 @@ public class GraphPanel extends JPanel implements ActionListener, PropertyChange
                 true,
                 false);
 
-        // Add value labels to the pie chart
-        org.jfree.chart.plot.PiePlot<String> plot = (org.jfree.chart.plot.PiePlot<String>) pieChart.getPlot();
-        plot.setLabelGenerator(new org.jfree.chart.labels.StandardPieSectionLabelGenerator(
+        // Add value labels to the pie chart and store reference to plot
+        piePlot = (org.jfree.chart.plot.PiePlot<String>) pieChart.getPlot();
+        piePlot.setLabelGenerator(new org.jfree.chart.labels.StandardPieSectionLabelGenerator(
                 "{0}\n${1}", java.text.NumberFormat.getInstance(), new java.text.DecimalFormat("0.00")));
 
         return pieChart;
@@ -237,13 +238,28 @@ public class GraphPanel extends JPanel implements ActionListener, PropertyChange
             }
         }
 
-        // update pie dataset
+        // update pie dataset with label colors
         Map<String, Float> data = state.getPie();
+        Map<String, String> labelColors = state.getLabelColors();
+
         // add each category to pie chart
         if (data != null) {
             for (Map.Entry<String, Float> entry : data.entrySet()) {
                 if (entry.getKey() != null && entry.getValue() != null) {
-                    pieDataset.setValue(entry.getKey(), entry.getValue());
+                    String labelName = entry.getKey();
+                    pieDataset.setValue(labelName, entry.getValue());
+
+                    // Apply color to this section if available
+                    if (labelColors != null && labelColors.containsKey(labelName)) {
+                        try {
+                            String hexColor = labelColors.get(labelName);
+                            Color color = Color.decode(hexColor);
+                            piePlot.setSectionPaint(labelName, color);
+                        } catch (Exception e) {
+                            // If color parsing fails, use default color
+                            System.err.println("Failed to parse color for label: " + labelName);
+                        }
+                    }
                 }
             }
         }

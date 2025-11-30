@@ -58,9 +58,7 @@ class BudgetInteractorTest {
     @Test
     void execute_updatesExistingBudget() {
         String monthKey = "02-2025";
-        Budget existing = new Budget(monthKey);
-        existing.setLimit(500f);
-        existing.setTotalSpent(100f);
+        Budget existing = new Budget(monthKey, 500f, 100f);
 
         when(dataAccess.getBudgetForMonth(monthKey)).thenReturn(existing);
 

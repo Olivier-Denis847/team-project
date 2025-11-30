@@ -18,22 +18,24 @@ public class ExpenseView extends JFrame {
 
     public ExpenseView(LabelController labelController, int userId) {
 
-        setTitle("Labels for Expense");
+        setTitle("Add Label");
         setSize(400, 400);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        //---------------------- MAIN PANEL ----------------------
+        // ---------------------- MAIN PANEL ----------------------
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        //---------------------- LABEL LIST ----------------------
+        // ---------------------- LABEL LIST ----------------------
         labelListModel = new DefaultListModel<>();
 
-        // load labels
+        // load labels (exclude Uncategorized)
         List<entity.Label> labels = labelController.getAllLabels(userId);
         for (entity.Label l : labels) {
-            labelListModel.addElement(l);
+            if (!"Uncategorized".equalsIgnoreCase(l.getLabelName())) {
+                labelListModel.addElement(l);
+            }
         }
 
         labelList = new JList<>(labelListModel);
@@ -43,12 +45,13 @@ public class ExpenseView extends JFrame {
             public Component getListCellRendererComponent(
                     JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
-                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected,
+                        cellHasFocus);
                 if (value instanceof entity.Label) {
                     entity.Label lbl = (entity.Label) value;
                     label.setText(lbl.getLabelName());
 
-                    // Try to set color
+                    // Set background to label's color (even when selected)
                     try {
                         Color color;
                         String colorStr = lbl.getColor();
@@ -61,9 +64,7 @@ public class ExpenseView extends JFrame {
                         }
 
                         label.setBackground(color);
-
-                        // Change text color for visibility
-                        label.setForeground(getContrastColor(color));
+                        label.setForeground(Color.BLACK);
                     } catch (Exception e) {
                         // Default color if parsing fails
                         label.setBackground(Color.LIGHT_GRAY);
@@ -79,7 +80,7 @@ public class ExpenseView extends JFrame {
         JScrollPane scrollPane = new JScrollPane(labelList);
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        //---------------------- BUTTON PANEL ----------------------
+        // ---------------------- BUTTON PANEL ----------------------
         JPanel btnPanel = new JPanel();
         btnPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
@@ -91,7 +92,7 @@ public class ExpenseView extends JFrame {
 
         add(panel);
 
-        //---------------------- ACTIONS ----------------------
+        // ---------------------- ACTIONS ----------------------
 
         // ADD LABEL
         addLabelButton.addActionListener(e -> {
@@ -135,8 +136,7 @@ public class ExpenseView extends JFrame {
                     this,
                     "Delete selected label?",
                     "Confirm",
-                    JOptionPane.YES_NO_OPTION
-            );
+                    JOptionPane.YES_NO_OPTION);
 
             if (confirm == JOptionPane.YES_OPTION) {
                 String result = labelController.deleteLabel(selected.getLabelId());
@@ -146,21 +146,15 @@ public class ExpenseView extends JFrame {
         });
     }
 
-    //---------------------- REFRESH LIST ----------------------
+    // ---------------------- REFRESH LIST ----------------------
     private void refreshList(LabelController labelController, int userId) {
         labelListModel.clear();
         List<entity.Label> labels = labelController.getAllLabels(userId);
 
         for (Label l : labels) {
-            labelListModel.addElement(l);
+            if (!"Uncategorized".equalsIgnoreCase(l.getLabelName())) {
+                labelListModel.addElement(l);
+            }
         }
     }
-
-    private Color getContrastColor(Color color){
-        double y = (299 * color.getRed() + 587 * color.getGreen() + 114 * color.getBlue()) / 1000;
-        return y >= 128 ? Color.BLACK : Color.WHITE;
-    }
-    }
-
-
-
+}
