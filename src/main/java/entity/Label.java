@@ -1,4 +1,6 @@
 package entity;
+
+
 /*
 * It is representing user, which can add the label for expense according to the object name, date,
 * and amount.

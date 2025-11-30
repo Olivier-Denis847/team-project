@@ -24,7 +24,6 @@ public class AddTransactionInteractor implements AddTransactionInputBoundary {
             presenter.prepareFailureView("the amount must be greater than zero\n");
             return;
         }
-        //delete this if branch later
         if (!type.equalsIgnoreCase("income") && !type.equalsIgnoreCase("expense")) {
             presenter.prepareFailureView("only Income or Expense is supported");
             return;

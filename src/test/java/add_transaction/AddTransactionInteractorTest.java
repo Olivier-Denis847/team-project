@@ -1,10 +1,10 @@
 package add_transaction;
 
-import add_transaction.use_case.addtransaction.AddTransactionInteractor;
-import add_transaction.use_case.addtransaction.AddTransactionOutputBoundary;
-import add_transaction.use_case.addtransaction.AddTransactionRequestModel;
-import add_transaction.use_case.addtransaction.AddTransactionResponseModel;
-import add_transaction.use_case.addtransaction.TransactionDataAccessInterface;
+import use_case.add_transaction.AddTransactionInteractor;
+import use_case.add_transaction.AddTransactionOutputBoundary;
+import use_case.add_transaction.AddTransactionRequestModel;
+import use_case.add_transaction.AddTransactionResponseModel;
+import use_case.add_transaction.TransactionDataAccessInterface;
 
 
 import entity.Transaction;

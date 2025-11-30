@@ -2,9 +2,7 @@ package data_access;
 
 import entity.Transaction;
 import entity.Label;
-
 import use_case.add_transaction.TransactionDataAccessInterface;
-
 
 import java.io.*;
 import java.util.*;

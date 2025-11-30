@@ -8,8 +8,12 @@ import use_case.add_transaction.AddTransactionInteractor;
 import use_case.add_transaction.TransactionDataAccessInterface;
 import view.add_transaction.AddTransactionView;
 
-class TransactionApp {
-    public static void main(String[] args) {
+
+public class TransactionApp {
+
+
+
+    public static void ShowTransactionApp() {
         AddTransactionViewModel viewModel = new AddTransactionViewModel();
         AddTransactionPresenter presenter = new AddTransactionPresenter(viewModel);
 
@@ -24,12 +28,6 @@ class TransactionApp {
 
         AddTransactionView view = new AddTransactionView(viewModel);
         view.setController(controller);
-
-
-        controller.addTransaction(100, "Income", "Test1");
-        controller.addTransaction(200, "Expense", "Test2");
-        controller.addTransaction(-100, "Income", "Test3");
-
-        System.out.println(dataAccess.getTransactions());
+        view.setVisible(true);
     }
 }

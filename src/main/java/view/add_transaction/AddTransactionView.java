@@ -72,7 +72,7 @@ public class AddTransactionView extends JFrame {
             }
         });
 
-        setVisible(true);
+        //setVisible(true);
     }
 
     public void setController(AddTransactionController controller) {

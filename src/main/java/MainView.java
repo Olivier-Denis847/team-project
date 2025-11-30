@@ -1,4 +1,6 @@
+
 import app.GraphApp;
+import app.TransactionApp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,6 +8,7 @@ import java.awt.*;
 public class MainView extends JFrame {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
+
 
     public MainView(MainInputData data) {
         super("Finance UI");
@@ -36,25 +39,19 @@ public class MainView extends JFrame {
         centerPanel.add(bottomPanel);
     }
 
-    private static JPanel createButtonsPanel() {
+    private JPanel createButtonsPanel() {
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 15));
 
-        //ToDo Call the add expense use case
-        JButton addExp = new JButton("Add Expense");
-        addExp.addActionListener(e -> {
-            System.out.println("Add expense use case");
+        JButton addTransaction = new JButton("Add Transaction");
+        addTransaction.addActionListener(e -> {
+            TransactionApp.ShowTransactionApp();
         });
 
-        JButton addInc = new JButton("Add Income");
-        addInc.addActionListener(e -> {
-            System.out.println("Add income use case");
-        });
 
-        addExp.setPreferredSize(new Dimension(280, 100));
-        addInc.setPreferredSize(new Dimension(280, 100));
 
-        bottomPanel.add(addExp);
-        bottomPanel.add(addInc);
+        addTransaction.setPreferredSize(new Dimension(280, 100));
+
+        bottomPanel.add(addTransaction);
         return bottomPanel;
     }
 
@@ -189,6 +186,8 @@ public class MainView extends JFrame {
 
     public static void main(String[] args) {
         //ToDo Get incomes/expenses from a database
+
+
         String[] expenses = {"Exp 1", "Exp 2", "Exp 3"};
         String[] incomes = {"Inc 1", "Inc 2", "Inc 3"};
         float money = 1000.25F;
