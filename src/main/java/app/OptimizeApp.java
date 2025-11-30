@@ -10,7 +10,7 @@ import view.optimize.OptimizeView;
 import javax.swing.*;
 
 public class OptimizeApp {
-    public static void main(String[] args) {
+    public static void start() {
         OptimizeViewModel viewModel = new OptimizeViewModel();
         OptimizePresenter presenter = new OptimizePresenter(viewModel);
         OptimizeDataAccess dataAccess = OptimizeDataAccess.getInstance();
@@ -20,10 +20,10 @@ public class OptimizeApp {
         optimizeView.setController(controller);
 
         JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
         frame.add(optimizeView);
         frame.pack();
         frame.setVisible(true);
-
     }
 }

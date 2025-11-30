@@ -1,13 +1,15 @@
-import app.GraphApp;
+package app;
+
+import data_access.MainInputData;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class MainView extends JFrame {
+public class MainApp extends JFrame {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
 
-    public MainView(MainInputData data) {
+    public MainApp(MainInputData data) {
         super("Finance UI");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
@@ -116,11 +118,11 @@ public class MainView extends JFrame {
             btn.addActionListener(e -> {
                 switch (item) {
                     case "Search": {
-                        System.out.println("Search use case");
+                        SearchApp.start();
                         break;
                     }
                     case "Budget": {
-                        System.out.println("Budget use case");
+                        BudgetApp.start();
                         break;
                     }
                     case "Graph": {
@@ -128,14 +130,10 @@ public class MainView extends JFrame {
                         break;
                     }
                     case "Optimize": {
-                        System.out.println("Optimize use case");
+                        OptimizeApp.start();
                         break;
                     }
-                    default: {
-                        System.out.println("Unknown item: " + item);
-                    }
                 }
-                //ToDo Call the respective use case
             });
         }
     }
@@ -194,7 +192,7 @@ public class MainView extends JFrame {
         float money = 1000.25F;
         float spent = 750.10F;
         MainInputData data = new MainInputData(expenses, incomes, money, spent);
-        MainView ui = new MainView(data);
+        MainApp ui = new MainApp(data);
         ui.setVisible(true);
     }
 }

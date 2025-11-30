@@ -16,7 +16,7 @@ public class BudgetApp {
     private static final String CHECK_BUDGET = "CHECK_BUDGET";
     private static final String YEAR_OVERVIEW = "YEAR_OVERVIEW";
 
-    public static void main(String[] args) {
+    public static void start() {
         SwingUtilities.invokeLater(() -> {
 
             // Shared data access
@@ -64,7 +64,7 @@ public class BudgetApp {
 
             // Frame setup
             JFrame frame = new JFrame("Budget Manager");
-            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             frame.setContentPane(root);
             frame.setMinimumSize(new Dimension(600, 600));
             frame.setLocationRelativeTo(null);
