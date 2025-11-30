@@ -21,7 +21,7 @@ public class BudgetInteractor implements BudgetInputBoundary {
         // Load or create entity
         Budget budget = budgetDataAccess.getBudgetForMonth(month);
         if (budget == null) {
-            budget = new Budget(month);
+            budget = new Budget(month, limit, totalSpent);
         }
 
         // Update core fields

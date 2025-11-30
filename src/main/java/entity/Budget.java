@@ -7,9 +7,10 @@ public class Budget {
     private String notes;
     private String lastUpdated;
 
-    public Budget(String month) {
+    public Budget(String month, float limit, float totalSpent) {
         this.month = month;
-        this.totalSpent = 0;
+        this.totalSpent = totalSpent;
+        this.limit = limit;
     }
 
     // Getters

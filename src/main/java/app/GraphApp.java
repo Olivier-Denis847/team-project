@@ -40,6 +40,7 @@ public class GraphApp {
 
         JFrame frame = new JFrame("Trend Graph");
         frame.setSize(1200, 800);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.add(panel, BorderLayout.CENTER);
         frame.setVisible(true);

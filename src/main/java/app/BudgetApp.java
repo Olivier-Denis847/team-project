@@ -4,7 +4,7 @@ import use_case.budget.*;
 import interface_adapter.budget.*;
 import use_case.budget.BudgetInteractor;
 import view.budget.*;
-import data_access.InMemoryBudgetDataAccess;
+import data_access.FileBudgetDataAccess;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,11 +16,11 @@ public class BudgetApp {
     private static final String CHECK_BUDGET = "CHECK_BUDGET";
     private static final String YEAR_OVERVIEW = "YEAR_OVERVIEW";
 
-    public static void main(String[] args) {
+    public static void start() {
         SwingUtilities.invokeLater(() -> {
 
             // Shared data access
-            BudgetDataAccessInterface dataAccess = new InMemoryBudgetDataAccess();
+            BudgetDataAccessInterface dataAccess = new FileBudgetDataAccess("src/main/java/data_access/budgets.txt");
 
             // Set Budget pipeline
             BudgetViewModel setBudgetViewModel = new BudgetViewModel();
@@ -64,7 +64,7 @@ public class BudgetApp {
 
             // Frame setup
             JFrame frame = new JFrame("Budget Manager");
-            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
             frame.setContentPane(root);
             frame.setMinimumSize(new Dimension(600, 600));
             frame.setLocationRelativeTo(null);
