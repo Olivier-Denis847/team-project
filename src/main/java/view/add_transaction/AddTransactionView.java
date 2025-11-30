@@ -20,7 +20,7 @@ public class AddTransactionView extends JFrame {
         this.mainApp = mainApp;
 
         setTitle("Add Transaction");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 500);
 
         setLayout(new BorderLayout());
