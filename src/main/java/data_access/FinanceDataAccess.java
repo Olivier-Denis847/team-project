@@ -192,19 +192,13 @@ public class FinanceDataAccess implements
                     }
                 }
 
-                // for categories instantiation
+                // for categories instantiation using new Category class
                 Category category = null;
                 if (obj.has("category") && !obj.isNull("category")) {
-                    String categoryName = obj.optString("category", null);
-                    if (categoryName != null) {
-                        try {
-                            category = Category.valueOf(categoryName.toUpperCase());
-                        } catch (IllegalArgumentException e) {
-                            category = Category.FOOD; // fallback default
-                        }
-                    }
+                    String categoryName = obj.optString("category", "Food"); // default if null
+                    category = new Category(categoryName);
                 } else {
-                    category = Category.FOOD; // default if missing
+                    category = new Category("Food"); // fallback default
                 }
 
                 // If no labels found, add the Uncategorized label

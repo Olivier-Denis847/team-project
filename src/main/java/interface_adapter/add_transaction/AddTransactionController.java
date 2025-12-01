@@ -12,8 +12,8 @@ public class AddTransactionController {
         this.AddTransactionInteractor = AddTransactionInteractor;
     }
 
-    public void addTransaction(float amount, String type, String note) {
-        AddTransactionRequestModel requestModel = new AddTransactionRequestModel(amount, note, type, new Date());
+    public void addTransaction(float amount, String type, String note, String categoryName) {
+        AddTransactionRequestModel requestModel = new AddTransactionRequestModel(amount, note, type, new Date(), categoryName);
         AddTransactionInteractor.execute(requestModel);
 
     }

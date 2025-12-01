@@ -7,12 +7,14 @@ public class AddTransactionRequestModel {
     private final String note;
     private final String type;
     private final Date date;
+    private final String categoryInput;
 
-    public AddTransactionRequestModel(float amount, String note, String type, Date date) {
+    public AddTransactionRequestModel(float amount, String note, String type, Date date, String categoryInput) {
         this.amount = amount;
         this.note = note;
         this.type = type;
         this.date = date;
+        this.categoryInput = categoryInput;
     }
     public float getAmount(){
         return amount;
@@ -28,4 +30,6 @@ public class AddTransactionRequestModel {
     public Date getDate(){
         return new Date();
     }
+
+    public String getCategoryInput() { return categoryInput; }
 }

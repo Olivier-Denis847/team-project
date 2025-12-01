@@ -37,6 +37,7 @@ public class AddTransactionView extends JFrame {
             typeBox.setSelectedItem("Income");
         }
         JTextField noteField = new JTextField(10);
+        JTextField categoryField = new JTextField(10);
         JButton addButton = new JButton("Add");
 
         inputPanel.add(new JLabel("Amount"));
@@ -45,6 +46,8 @@ public class AddTransactionView extends JFrame {
         inputPanel.add(typeBox);
         inputPanel.add(new JLabel("Note:"));
         inputPanel.add(noteField);
+        inputPanel.add(new JLabel("Category"));
+        inputPanel.add(categoryField);
         inputPanel.add(addButton);
 
         add(inputPanel, BorderLayout.NORTH);
@@ -73,13 +76,14 @@ public class AddTransactionView extends JFrame {
                 float amount = Float.parseFloat(amountField.getText());
                 String type = typeBox.getSelectedItem().toString();
                 String note = noteField.getText();
+                String category = categoryField.getText();
 
                 if (controller == null) {
                     JOptionPane.showMessageDialog(this, "Controller is not set.");
                     return;
                 }
 
-                controller.addTransaction(amount, type, note);
+                controller.addTransaction(amount, type, note, category);
 
             } catch (NumberFormatException ex) {
                 outputArea.append("Invalid Input");

@@ -20,16 +20,22 @@ public class FilterTransactionsInteractor implements FilterTransactionsInputBoun
 
     @Override
     public void filterByCategory(FilterTransactionsRequestModel requestModel) {
-        Category category;
-        try {
-            category = Category.valueOf(requestModel.getCategoryInput().trim().toUpperCase());
-        } catch (IllegalArgumentException e) {
+        String input = requestModel.getCategoryInput();
+
+        if (input == null || input.trim().isEmpty()) {
             presenter.present(new FilterTransactionsResponseModel(List.of()));
             return;
         }
 
+        String categoryName = input.trim();
+
+        // Create a category object from the user input
+        Category selectedCategory = new Category(categoryName);
+
+        // Filter by category name (case-insensitive)
         List<Transaction> filtered = dataAccess.getAll().stream()
-                .filter(t -> t.getCategory() == category)
+                .filter(t -> t.getCategory() != null &&
+                        t.getCategory().getName().equalsIgnoreCase(selectedCategory.getName()))
                 .collect(Collectors.toList());
 
         presenter.present(new FilterTransactionsResponseModel(filtered));

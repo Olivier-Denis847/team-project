@@ -54,7 +54,7 @@ public class FilterTransactionsView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedCategory = (String) categoryComboBox.getSelectedItem();
-                controller.filterByCategory(selectedCategory);
+                controller.filter(selectedCategory);
                 updateResults();
             }
         });

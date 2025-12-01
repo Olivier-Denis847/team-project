@@ -21,6 +21,7 @@ public class AddTransactionInteractor implements AddTransactionInputBoundary {
         String type = requestModel.getType();
         String note = requestModel.getNote();
         Date date = requestModel.getDate();
+        String categoryInput = requestModel.getCategoryInput();
 
         if (amount <= 0) {
             presenter.prepareFailureView("the amount must be greater than zero\n");
@@ -39,13 +40,29 @@ public class AddTransactionInteractor implements AddTransactionInputBoundary {
             defaultLabels.add(uncategorizedLabel);
         }
 
-        String categoryInput = userSelectedCategory; // e.g., "food"
-        try {
-            category = Category.valueOf(categoryInput.trim().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            category = Category.FOOD; // fallback default if input is invalid
+        // ----- CATEGORY HANDLING (Updated) -----
+        Category category;
+
+        if (categoryInput == null || categoryInput.trim().isEmpty()) {
+            // default category if none entered
+            category = new Category("Uncategorized");
+        } else {
+            category = new Category(categoryInput.trim());
         }
-        Transaction t = new Transaction(nextId++, amount, defaultLabels, note, date, type, category);
+
+        // Create transaction
+        Transaction t = new Transaction(
+                nextId++,
+                amount,
+                defaultLabels,
+                note,
+                date,
+                type,
+                category
+        );
+
+        // Save transaction
+        dataAccess.save(t);
 
         dataAccess.save(t);
         AddTransactionResponseModel responseModel = new AddTransactionResponseModel(
