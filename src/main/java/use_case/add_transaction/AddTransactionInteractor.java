@@ -7,7 +7,6 @@ import java.util.*;
 public class AddTransactionInteractor implements AddTransactionInputBoundary {
     private final AddTransactionOutputBoundary presenter;
     private final TransactionDataAccessInterface dataAccess;
-    private int nextId = 1;
 
     public AddTransactionInteractor(AddTransactionOutputBoundary presenter, TransactionDataAccessInterface dataAccess) {
         this.presenter = presenter;
@@ -30,15 +29,34 @@ public class AddTransactionInteractor implements AddTransactionInputBoundary {
             return;
         }
 
+        // Generate unique ID based on existing transactions
+        long nextId = 1;
+        List<Transaction> existingTransactions = dataAccess.getAll();
+        for (Transaction existing : existingTransactions) {
+            if (existing.getId() >= nextId) {
+                nextId = existing.getId() + 1;
+            }
+        }
+
         // Create transaction with Uncategorized label by default
         List<Label> defaultLabels = new ArrayList<>();
         Label uncategorizedLabel = dataAccess.getUncategorizedLabel();
         if (uncategorizedLabel != null) {
             defaultLabels.add(uncategorizedLabel);
         }
-        Transaction t = new Transaction(nextId++, amount, defaultLabels, note, date, type);
 
+        // Create transaction
+        Transaction t = new Transaction(
+                nextId,
+                amount,
+                defaultLabels,
+                note,
+                date,
+                type);
+
+        // Save transaction
         dataAccess.save(t);
+
         AddTransactionResponseModel responseModel = new AddTransactionResponseModel(
                 nextId,
                 amount,

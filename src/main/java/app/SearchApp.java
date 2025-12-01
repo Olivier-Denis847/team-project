@@ -10,10 +10,6 @@ public class SearchApp {
         throw new IllegalStateException("Utility class");
     }
 
-    private SearchApp() {
-        // Prevent instantiation (utility class)
-    }
-
     public static void start(FinanceDataAccess dataAccess) {
         SwingUtilities.invokeLater(() -> {
 

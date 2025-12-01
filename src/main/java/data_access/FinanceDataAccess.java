@@ -569,11 +569,11 @@ public class FinanceDataAccess implements
 
             if (!alreadyHasLabel) {
                 labels.add(label);
+                modified = true;
             }
-
-            modified = true;
             break;
         }
+
         if (modified) {
             writeTransactions(transactions);
         }
@@ -585,27 +585,26 @@ public class FinanceDataAccess implements
         boolean modified = false;
 
         for (Transaction t : transactions) {
-            if (t.getId() != id)
-                continue;
+            if (t.getId() == (long) id) {
+                List<Label> labels = t.getLabels();
+                if (labels == null)
+                    break;
 
-            List<Label> labels = t.getLabels();
+                int before = labels.size();
+                labels.removeIf(l -> l.getLabelId() == labelId);
 
-            if (labels == null)
-                break;
-
-            int before = labels.size();
-            labels.removeIf(l -> l.getLabelId() == labelId);
-
-            // Check if removal happened before adding Uncategorized
-            if (labels.size() != before) {
-                modified = true;
-            }
-
-            if (labels.isEmpty()) {
-                Label uncategorized = getUncategorizedLabel();
-                if (uncategorized != null) {
-                    labels.add(uncategorized);
+                // Check if removal happened before adding Uncategorized
+                if (labels.size() != before) {
+                    modified = true;
                 }
+
+                if (labels.isEmpty()) {
+                    Label uncategorized = getUncategorizedLabel();
+                    if (uncategorized != null) {
+                        labels.add(uncategorized);
+                    }
+                }
+                break;
             }
         }
 

@@ -6,26 +6,26 @@ public class AddTransactionRequestModel {
     private final float amount;
     private final String note;
     private final String type;
-    private final Date date;
 
     public AddTransactionRequestModel(float amount, String note, String type, Date date) {
         this.amount = amount;
         this.note = note;
         this.type = type;
-        this.date = date;
     }
-    public float getAmount(){
+
+    public float getAmount() {
         return amount;
     }
-    public String getType(){
+
+    public String getType() {
         return type;
     }
 
-    public String getNote(){
+    public String getNote() {
         return note;
     }
 
-    public Date getDate(){
+    public Date getDate() {
         return new Date();
     }
 }

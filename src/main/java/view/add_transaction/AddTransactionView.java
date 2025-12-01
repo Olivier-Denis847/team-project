@@ -11,13 +11,9 @@ import java.beans.PropertyChangeListener;
 
 public class AddTransactionView extends JFrame {
     private AddTransactionController controller;
-    private final AddTransactionViewModel viewModel;
     private final JTextArea outputArea = new JTextArea(8, 30);
-    private final MainApp mainApp;
 
     public AddTransactionView(AddTransactionViewModel viewModel, MainApp mainApp, String defaultType) {
-        this.viewModel = viewModel;
-        this.mainApp = mainApp;
 
         setTitle("Add Transaction");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

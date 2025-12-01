@@ -143,12 +143,11 @@ public class LabelUseCaseTest {
         Assertions.assertTrue(labelDao.wasGetAllCalled);
     }
 
-
     // =================================================================
     // STUB Classes (Fake Database) - Implements Interfaces for Testing
     // =================================================================
 
-    class StubLabelDataAccess extends FinanceDataAccess implements LabelDataAccessInterface {
+    class StubLabelDataAccess extends FinanceDataAccess {
         boolean wasCreateCalled = false;
         boolean wasUpdateCalled = false;
         boolean wasDeleteCalled = false;
@@ -157,13 +156,19 @@ public class LabelUseCaseTest {
         Label returnLabel = null;
 
         @Override
-        public void updateLabel(Label label) { wasUpdateCalled = true; }
+        public void updateLabel(Label label) {
+            wasUpdateCalled = true;
+        }
 
         @Override
-        public void createLabel(Label label) { wasCreateCalled = true; }
+        public void createLabel(Label label) {
+            wasCreateCalled = true;
+        }
 
         @Override
-        public Label getLabelById(int labelId) { return returnLabel; }
+        public Label getLabelById(int labelId) {
+            return returnLabel;
+        }
 
         @Override
         public List<Label> getAllLabelsByUser(int userid) {
@@ -172,24 +177,34 @@ public class LabelUseCaseTest {
         }
 
         @Override
-        public boolean labelExists(int userid, String labelName) { return forceExists; }
+        public boolean labelExists(int userid, String labelName) {
+            return forceExists;
+        }
 
         @Override
-        public void deleteLabel(int labelId) { wasDeleteCalled = true; }
+        public void deleteLabel(int labelId) {
+            wasDeleteCalled = true;
+        }
     }
 
-    static class StubALEDataAccess extends FinanceDataAccess implements ALEDataAccessInterface {
+    static class StubALEDataAccess extends FinanceDataAccess {
         boolean wasRemoveCalled = false;
         boolean wasAssignCalled = false;
         AddLabelExpense returnAle = null;
 
         @Override
-        public AddLabelExpense getAddLabelExpense(int id) { return returnAle; }
+        public AddLabelExpense getAddLabelExpense(int id) {
+            return returnAle;
+        }
 
         @Override
-        public void removeLabelFromAllEntries(int labelId) { wasRemoveCalled = true; }
+        public void removeLabelFromAllEntries(int labelId) {
+            wasRemoveCalled = true;
+        }
 
         @Override
-        public void assignLabelExpense(int id, Label label) { wasAssignCalled = true; }
+        public void assignLabelExpense(int id, Label label) {
+            wasAssignCalled = true;
+        }
     }
 }
