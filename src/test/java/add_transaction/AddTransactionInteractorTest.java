@@ -130,4 +130,162 @@ class AddTransactionInteractorTest {
         AddTransactionInteractor interactor = new AddTransactionInteractor(presenter, repo);
         interactor.execute(input);
     }
+
+    @Test
+    void successExpenseTest() {
+
+        AddTransactionRequestModel input = new AddTransactionRequestModel(
+                150,
+                "Dinner",
+                "Expense",
+                new Date());
+
+        InMemoryTransactionRepository repo = new InMemoryTransactionRepository();
+
+        AddTransactionOutputBoundary presenter = new AddTransactionOutputBoundary() {
+            @Override
+            public void prepareSuccessView(AddTransactionResponseModel response) {
+                assertEquals(150, response.getAmount());
+                assertEquals("Expense", response.getType());
+                assertEquals(1, repo.getAll().size());
+                assertEquals("Expense", repo.lastSavedType);
+            }
+
+            @Override
+            public void prepareFailureView(String error) {
+                fail("Failure unexpected: " + error);
+            }
+        };
+
+        AddTransactionInteractor interactor = new AddTransactionInteractor(presenter, repo);
+        interactor.execute(input);
+    }
+
+    @Test
+    void nextIdIncrementsCorrectlyTest() {
+
+        InMemoryTransactionRepository repo = new InMemoryTransactionRepository();
+
+        Transaction existing = new Transaction(
+                5,
+                300,
+                new ArrayList<>(),
+                "Prev",
+                new Date(),
+                "Income");
+        repo.save(existing);
+
+        AddTransactionRequestModel input = new AddTransactionRequestModel(
+                100,
+                "New",
+                "Income",
+                new Date());
+
+        AddTransactionOutputBoundary presenter = new AddTransactionOutputBoundary() {
+            @Override
+            public void prepareSuccessView(AddTransactionResponseModel response) {
+                assertEquals(6, response.getTransactionId());
+            }
+
+            @Override
+            public void prepareFailureView(String error) {
+                fail("Should not fail: " + error);
+            }
+        };
+
+        AddTransactionInteractor interactor = new AddTransactionInteractor(presenter, repo);
+        interactor.execute(input);
+    }
+
+    @Test
+    void successWithoutUncategorizedLabelTest() {
+
+        TransactionDataAccessInterface repo = new TransactionDataAccessInterface() {
+
+            private final ArrayList<Transaction> transactions = new ArrayList<>();
+
+            @Override
+            public void save(Transaction transaction) {
+                transactions.add(transaction);
+            }
+
+            @Override
+            public ArrayList<Transaction> getAll() {
+                return transactions;
+            }
+
+            @Override
+            public List<Transaction> getTransactions() {
+                return List.of();
+            }
+
+            @Override
+            public entity.Label getUncategorizedLabel() {
+                return null;
+            }
+        };
+
+        AddTransactionRequestModel input = new AddTransactionRequestModel(
+                100,
+                "Note",
+                "Income",
+                new Date()
+        );
+
+        AddTransactionOutputBoundary presenter = new AddTransactionOutputBoundary() {
+            @Override
+            public void prepareSuccessView(AddTransactionResponseModel response) {
+                assertEquals(100, response.getAmount());
+                assertEquals("Income", response.getType());
+                assertEquals(1, repo.getAll().size());
+            }
+
+            @Override
+            public void prepareFailureView(String error) {
+                fail("Unexpected failure: " + error);
+            }
+        };
+
+        AddTransactionInteractor interactor = new AddTransactionInteractor(presenter, repo);
+        interactor.execute(input);
+    }
+
+    @Test
+    void nextIdSkipsLowerExistingIdsTest() {
+
+        InMemoryTransactionRepository repo = new InMemoryTransactionRepository();
+
+        repo.save(new Transaction(
+                5, 300, new ArrayList<>(), "Old", new Date(), "Income"
+        ));
+
+        repo.save(new Transaction(
+                1, 100, new ArrayList<>(), "Lower", new Date(), "Income"
+        ));
+
+        AddTransactionRequestModel input = new AddTransactionRequestModel(
+                200,
+                "New",
+                "Income",
+                new Date()
+        );
+
+        AddTransactionOutputBoundary presenter = new AddTransactionOutputBoundary() {
+            @Override
+            public void prepareSuccessView(AddTransactionResponseModel response) {
+                assertEquals(6, response.getTransactionId());
+            }
+
+            @Override
+            public void prepareFailureView(String error) {
+                fail("Unexpected failure: " + error);
+            }
+        };
+
+        AddTransactionInteractor interactor = new AddTransactionInteractor(presenter, repo);
+        interactor.execute(input);
+    }
+
+
 }
+
