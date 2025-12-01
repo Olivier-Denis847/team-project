@@ -1,4 +1,4 @@
-package Brandon.useCase;
+package budget.useCase;
 
 import entity.Budget;
 import org.junit.jupiter.api.BeforeEach;
