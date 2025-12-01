@@ -1,6 +1,7 @@
 package data_access;
 
 import entity.Budget;
+import entity.Category;
 import entity.Label;
 import entity.Transaction;
 import use_case.add_transaction.TransactionDataAccessInterface;
@@ -191,6 +192,21 @@ public class FinanceDataAccess implements
                     }
                 }
 
+                // for categories instantiation
+                Category category = null;
+                if (obj.has("category") && !obj.isNull("category")) {
+                    String categoryName = obj.optString("category", null);
+                    if (categoryName != null) {
+                        try {
+                            category = Category.valueOf(categoryName.toUpperCase());
+                        } catch (IllegalArgumentException e) {
+                            category = Category.FOOD; // fallback default
+                        }
+                    }
+                } else {
+                    category = Category.FOOD; // default if missing
+                }
+
                 // If no labels found, add the Uncategorized label
                 if (labels.isEmpty()) {
                     Label uncategorized = getUncategorizedLabel();
@@ -199,7 +215,7 @@ public class FinanceDataAccess implements
                     }
                 }
 
-                Transaction t = new Transaction(id, amount, labels, note, date, type);
+                Transaction t = new Transaction(id, amount, labels, note, date, type, category);
                 result.add(t);
             }
         } catch (Exception e) {

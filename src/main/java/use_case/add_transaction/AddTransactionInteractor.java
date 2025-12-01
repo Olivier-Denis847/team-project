@@ -1,5 +1,6 @@
 package use_case.add_transaction;
 
+import entity.Category;
 import entity.Transaction;
 import entity.Label;
 import java.util.*;
@@ -37,7 +38,14 @@ public class AddTransactionInteractor implements AddTransactionInputBoundary {
         if (uncategorizedLabel != null) {
             defaultLabels.add(uncategorizedLabel);
         }
-        Transaction t = new Transaction(nextId++, amount, defaultLabels, note, date, type);
+
+        String categoryInput = userSelectedCategory; // e.g., "food"
+        try {
+            category = Category.valueOf(categoryInput.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            category = Category.FOOD; // fallback default if input is invalid
+        }
+        Transaction t = new Transaction(nextId++, amount, defaultLabels, note, date, type, category);
 
         dataAccess.save(t);
         AddTransactionResponseModel responseModel = new AddTransactionResponseModel(
