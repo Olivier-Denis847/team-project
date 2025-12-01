@@ -23,6 +23,8 @@ public class GraphPresenter implements GraphOutputBoundary {
             graphState.setBar(data.getBar());
         if (data.getPie() != null)
             graphState.setPie(data.getPie());
+        if (data.getLabelColors() != null)
+            graphState.setLabelColors(data.getLabelColors());
         gvm.firePropertyChange();
 
         // TODO: implement ALERT logic

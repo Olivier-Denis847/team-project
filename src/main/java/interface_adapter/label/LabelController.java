@@ -14,7 +14,7 @@ public class LabelController {
     }
 
     public String createLabel(String name, double amount, String description, String color, int userId) {
-        Label label = new Label(0, name, color, userId, amount, description);
+        Label label = new Label(0, name, color, description);
         return userCase.createLabel(label);
     }
 
@@ -26,6 +26,14 @@ public class LabelController {
         return userCase.assignLabelToAle(id, labelId);
     }
 
+    public void assignLabelToExpense(int transactionId, Label label) {
+        userCase.assignLabelToExpense(transactionId, label);
+    }
+
+    public void removeLabelFromExpense(int transactionId, int labelId) {
+        userCase.removeLabelFromExpense(transactionId, labelId);
+    }
+
     public String deleteLabel(int labelId) {
         return userCase.deleteLabel(labelId);
     }
@@ -34,4 +42,3 @@ public class LabelController {
         return userCase.getAllLabels(userId);
     }
 }
-

@@ -1,17 +1,15 @@
 package use_case.label;
 
-import data_access.ALEDataAccess;
-import data_access.LabelDataAccess;
 import entity.Label;
 
 import java.util.List;
 
 public class LabelUserCaseImp implements LabelUserCase {
 
-    private LabelDataAccess labelDataAccess;
-    private ALEDataAccess aleDataAccess;
+    private LabelDataAccessInterface labelDataAccess;
+    private ALEDataAccessInterface aleDataAccess;
 
-    public LabelUserCaseImp(LabelDataAccess labelDataAccess, ALEDataAccess aleDataAccess) {
+    public LabelUserCaseImp(LabelDataAccessInterface labelDataAccess, ALEDataAccessInterface aleDataAccess) {
         this.labelDataAccess = labelDataAccess;
         this.aleDataAccess = aleDataAccess;
     }
@@ -24,16 +22,12 @@ public class LabelUserCaseImp implements LabelUserCase {
             return "Label name cannot be empty.";
         }
 
-        if (label.getAmount() < 0) {
-            return "Amount cannot be negative.";
-        }
-
         if (label.getColor() == null || label.getColor().trim().isEmpty()) {
             return "Color cannot be empty.";
         }
 
         // Prevent duplicates by name
-        if (labelDataAccess.labelExists(label.getUserId(), label.getLabelName())) {
+        if (labelDataAccess.labelExists(0, label.getLabelName())) {
             return "Label with this name already exists.";
         }
 
@@ -41,16 +35,11 @@ public class LabelUserCaseImp implements LabelUserCase {
         return "Label created successfully.";
     }
 
-
     @Override
     public String editLabel(Label label) {
 
         if (label.getLabelName() == null || label.getLabelName().trim().isEmpty()) {
             return "Label name cannot be empty.";
-        }
-
-        if (label.getAmount() < 0) {
-            return "Amount cannot be negative.";
         }
 
         if (label.getColor() == null || label.getColor().trim().isEmpty()) {
@@ -60,7 +49,6 @@ public class LabelUserCaseImp implements LabelUserCase {
         labelDataAccess.updateLabel(label);
         return "Label updated successfully.";
     }
-
 
     @Override
     public String assignLabelToAle(int id, int labelId) {
@@ -76,6 +64,18 @@ public class LabelUserCaseImp implements LabelUserCase {
 
         aleDataAccess.assignLabelExpense(id, label);
         return "Label added to expense successfully.";
+    }
+
+    @Override
+    public void assignLabelToExpense(int transactionId, Label label) {
+        if (label != null) {
+            labelDataAccess.assignLabelExpense(transactionId, label);
+        }
+    }
+
+    @Override
+    public void removeLabelFromExpense(int transactionId, int labelId) {
+        labelDataAccess.removeLabelFromExpense(transactionId, labelId);
     }
 
     // DELETE LABEL

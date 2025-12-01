@@ -1,11 +1,10 @@
 package add_transaction;
 
-import add_transaction.use_case.addtransaction.AddTransactionInteractor;
-import add_transaction.use_case.addtransaction.AddTransactionOutputBoundary;
-import add_transaction.use_case.addtransaction.AddTransactionRequestModel;
-import add_transaction.use_case.addtransaction.AddTransactionResponseModel;
-import add_transaction.use_case.addtransaction.TransactionDataAccessInterface;
-
+import use_case.add_transaction.AddTransactionInteractor;
+import use_case.add_transaction.AddTransactionOutputBoundary;
+import use_case.add_transaction.AddTransactionRequestModel;
+import use_case.add_transaction.AddTransactionResponseModel;
+import use_case.add_transaction.TransactionDataAccessInterface;
 
 import entity.Transaction;
 import org.junit.jupiter.api.Test;
@@ -41,6 +40,11 @@ class AddTransactionInteractorTest {
         public List<Transaction> getTransactions() {
             return List.of();
         }
+
+        @Override
+        public entity.Label getUncategorizedLabel() {
+            return new entity.Label(0, "Uncategorized", "#CCCCCC", "Default label");
+        }
     }
 
     @Test
@@ -50,8 +54,7 @@ class AddTransactionInteractorTest {
                 100,
                 "Test note",
                 "Income",
-                new Date()
-        );
+                new Date());
 
         InMemoryTransactionRepository repo = new InMemoryTransactionRepository();
 
@@ -81,8 +84,7 @@ class AddTransactionInteractorTest {
                 0,
                 "Test note",
                 "Expense",
-                new Date()
-        );
+                new Date());
 
         InMemoryTransactionRepository repo = new InMemoryTransactionRepository();
 
@@ -109,8 +111,7 @@ class AddTransactionInteractorTest {
                 200,
                 "Test note",
                 "INVALID_TYPE",
-                new Date()
-        );
+                new Date());
 
         InMemoryTransactionRepository repo = new InMemoryTransactionRepository();
 

@@ -1,5 +1,6 @@
 package view.add_transaction;
 
+import app.MainApp;
 import interface_adapter.add_transaction.AddTransactionController;
 import interface_adapter.add_transaction.AddTransactionViewModel;
 
@@ -12,12 +13,14 @@ public class AddTransactionView extends JFrame {
     private AddTransactionController controller;
     private final AddTransactionViewModel viewModel;
     private final JTextArea outputArea = new JTextArea(8, 30);
+    private final MainApp mainApp;
 
-    public AddTransactionView(AddTransactionViewModel viewModel) {
+    public AddTransactionView(AddTransactionViewModel viewModel, MainApp mainApp, String defaultType) {
         this.viewModel = viewModel;
+        this.mainApp = mainApp;
 
         setTitle("Add Transaction");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 500);
 
         setLayout(new BorderLayout());
@@ -26,7 +29,13 @@ public class AddTransactionView extends JFrame {
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
 
         JTextField amountField = new JTextField(10);
-        JComboBox<String> typeBox = new JComboBox<>(new String[]{"Income", "Expense"});
+        JComboBox<String> typeBox = new JComboBox<>(new String[] { "Income", "Expense" });
+        // Set default selection based on the button clicked
+        if (defaultType != null && defaultType.equalsIgnoreCase("Expense")) {
+            typeBox.setSelectedItem("Expense");
+        } else {
+            typeBox.setSelectedItem("Income");
+        }
         JTextField noteField = new JTextField(10);
         JButton addButton = new JButton("Add");
 
@@ -38,7 +47,6 @@ public class AddTransactionView extends JFrame {
         inputPanel.add(noteField);
         inputPanel.add(addButton);
 
-
         add(inputPanel, BorderLayout.NORTH);
 
         outputArea.setEditable(false);
@@ -48,11 +56,17 @@ public class AddTransactionView extends JFrame {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if ("message".equals(evt.getPropertyName())) {
-                    outputArea.append((String) evt.getNewValue() + "\n");
+                    String message = (String) evt.getNewValue();
+                    outputArea.append(message + "\n");
+                    // Refresh MainApp if transaction was added successfully
+                    if (message.contains("saved") || message.contains("successfully") || message.contains("Success")) {
+                        if (mainApp != null) {
+                            SwingUtilities.invokeLater(() -> mainApp.refreshUI());
+                        }
+                    }
                 }
             }
         });
-
 
         addButton.addActionListener(e -> {
             try {

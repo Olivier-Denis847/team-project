@@ -1,6 +1,6 @@
 package app;
 
-import data_access.GraphTestDataAccess;
+import data_access.FinanceDataAccess;
 import interface_adapter.graph.GraphController;
 import interface_adapter.graph.GraphPresenter;
 import interface_adapter.graph.GraphViewModel;
@@ -12,12 +12,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GraphApp {
-    public static void showGraphView() {
-        // Set up test data access
-        /* TODO: currently using the graphTestDataAccess, switch this
-         * to actual data access
-         */
-        GraphDataAccessInterface dataAccess = new GraphTestDataAccess();
+    public static void start(FinanceDataAccess financeDataAccess) {
+        // Use the shared FinanceDataAccess instance
+        GraphDataAccessInterface dataAccess = financeDataAccess;
 
         // Set up presenter and view model
         GraphViewModel viewModel = new GraphViewModel();

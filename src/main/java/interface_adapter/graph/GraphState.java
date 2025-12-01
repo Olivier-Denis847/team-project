@@ -12,6 +12,7 @@ public class GraphState {
     private String selectedType; // "Expense" / "Income"
     private Map<Integer, Float> bar; // bar data <Date, Amount>
     private Map<String, Float> pie; // category -> value
+    private Map<String, String> labelColors; // label name -> hex color
 
     public String getSelectedRange() {
         return selectedRange;
@@ -55,5 +56,13 @@ public class GraphState {
 
     public void setPie(Map<String, Float> pie) {
         this.pie = pie;
+    }
+
+    public Map<String, String> getLabelColors() {
+        return labelColors;
+    }
+
+    public void setLabelColors(Map<String, String> labelColors) {
+        this.labelColors = labelColors;
     }
 }

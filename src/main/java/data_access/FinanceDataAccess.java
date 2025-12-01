@@ -8,7 +8,7 @@ import use_case.graph.GraphDataAccessInterface;
 import use_case.label.ALEDataAccessInterface;
 import use_case.label.AddLabelExpense;
 import use_case.label.LabelDataAccessInterface;
-import use_case.budget.SetBudgetDataAccessInterface;
+import use_case.budget.BudgetDataAccessInterface;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,42 +24,42 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * FinanceDataAccess implements the different data access interfaces for this application
+ * FinanceDataAccess implements the different data access interfaces for this
+ * application
  * and persists data into three JSON files:
  *
  * 1) TransactionData.JSON
- *    [
- *      {
- *        "id": 1,
- *        "amount": 10.5,
- *        "type": "expense",
- *        "note": "Coffee",
- *        "date": "1732752000000",
- *        "labelIds": [1, 2]
- *      },
- *      ...
- *    ]
+ * [
+ * {
+ * "id": 1,
+ * "amount": 10.5,
+ * "type": "expense",
+ * "note": "Coffee",
+ * "date": "1732752000000",
+ * "labelIds": [1, 2]
+ * },
+ * ...
+ * ]
  *
  * 2) LabelData.JSON
- *    (reserved for future label persistence)
+ * (reserved for future label persistence)
  *
  * 3) BudgetData.JSON
- *    {
- *      "budgets": [
- *        {
- *          "budgetID": 1,
- *          "month": "2025-11",
- *          "limit": 1000.0,
- *          "totalSpent": 250.0
- *        }
- *      ],
- *      "graphRange": "Month",
- *      "graphType": "Expense"
- *    }
+ * {
+ * "budgets": [
+ * {
+ * "month": "2025-11",
+ * "limit": 1000.0,
+ * "totalSpent": 250.0
+ * }
+ * ],
+ * "graphRange": "Month",
+ * "graphType": "Expense"
+ * }
  */
 public class FinanceDataAccess implements
         TransactionDataAccessInterface,
-        SetBudgetDataAccessInterface,
+        BudgetDataAccessInterface,
         GraphDataAccessInterface,
         ALEDataAccessInterface,
         LabelDataAccessInterface {
@@ -75,6 +75,7 @@ public class FinanceDataAccess implements
         this.transactionFile = new File("TransactionData.JSON");
         this.labelFile = new File("LabelData.JSON");
         this.budgetFile = new File("BudgetData.JSON");
+        ensureUncategorizedLabel();
     }
 
     /**
@@ -84,10 +85,41 @@ public class FinanceDataAccess implements
         this.transactionFile = new File(transactionPath);
         this.labelFile = new File(labelPath);
         this.budgetFile = new File(budgetPath);
+        ensureUncategorizedLabel();
+    }
+
+    /**
+     * Ensure the default "Uncategorized" label exists for user 1.
+     */
+    private void ensureUncategorizedLabel() {
+        final int DEFAULT_USER_ID = 1;
+        if (!labelExists(DEFAULT_USER_ID, "Uncategorized")) {
+            Label uncategorized = new Label(0, "Uncategorized", "#CCCCCC",
+                    "Default label for uncategorized transactions");
+            createLabel(uncategorized);
+        }
+    }
+
+    /**
+     * Get the uncategorized label for default user.
+     * 
+     * @return the uncategorized Label object
+     */
+    public Label getUncategorizedLabel() {
+        final int DEFAULT_USER_ID = 1;
+        List<Label> labels = getAllLabelsByUser(DEFAULT_USER_ID);
+        for (Label label : labels) {
+            if ("Uncategorized".equalsIgnoreCase(label.getLabelName())) {
+                return label;
+            }
+        }
+        // Should not happen since ensureUncategorizedLabel is called in constructor
+        return null;
     }
 
     // ===============================
     // Transaction persistence
+    // Credit: Kentaro - originally created TransactionDataAccessObject
     // ===============================
 
     /**
@@ -146,10 +178,26 @@ public class FinanceDataAccess implements
                     }
                 }
 
-                // For now, we ignore label IDs when reconstructing the Transaction.
-                // The labels list is left empty; label-related methods are handled elsewhere.
-                // TODO: reconstruct LABELS using labelData.json files when implemented
+                // Reconstruct labels from labelIds
                 List<Label> labels = new ArrayList<>();
+                if (obj.has("labelIds") && !obj.isNull("labelIds")) {
+                    JSONArray labelIdsArray = obj.getJSONArray("labelIds");
+                    for (int j = 0; j < labelIdsArray.length(); j++) {
+                        int labelId = labelIdsArray.getInt(j);
+                        Label label = getLabelById(labelId);
+                        if (label != null) {
+                            labels.add(label);
+                        }
+                    }
+                }
+
+                // If no labels found, add the Uncategorized label
+                if (labels.isEmpty()) {
+                    Label uncategorized = getUncategorizedLabel();
+                    if (uncategorized != null) {
+                        labels.add(uncategorized);
+                    }
+                }
 
                 Transaction t = new Transaction(id, amount, labels, note, date, type);
                 result.add(t);
@@ -309,7 +357,8 @@ public class FinanceDataAccess implements
     }
 
     // ===============================
-    // SetBudgetDataAccessInterface
+    // BudgetDataAccessInterface
+    // Credit: Brandon - originally created FileBudgetDataAccess
     // ===============================
 
     /**
@@ -328,10 +377,21 @@ public class FinanceDataAccess implements
             JSONObject obj = arr.getJSONObject(i);
             String m = obj.optString("month", null);
             if (month.equals(m)) {
-                Budget budget = new Budget(month);
-                budget.setBudgetID(obj.optInt("budgetID", 0));
-                budget.setLimit((float) obj.optDouble("limit", 0.0));
-                budget.setTotalSpent((float) obj.optDouble("totalSpent", 0.0));
+                float limit = (float) obj.optDouble("limit", 0.0);
+                float totalSpent = (float) obj.optDouble("totalSpent", 0.0);
+
+                Budget budget = new Budget(month, limit, totalSpent);
+
+                String notes = obj.optString("notes", null);
+                if (notes != null && !notes.isBlank()) {
+                    budget.setNotes(notes);
+                }
+
+                String lastUpdated = obj.optString("lastUpdated", null);
+                if (lastUpdated != null && !lastUpdated.isBlank()) {
+                    budget.setLastUpdated(lastUpdated);
+                }
+
                 return budget;
             }
         }
@@ -339,7 +399,8 @@ public class FinanceDataAccess implements
     }
 
     /**
-     * Save or update a budget. If a budget for the same month already exists, it is updated.
+     * Save or update a budget. If a budget for the same month already exists, it is
+     * updated.
      *
      * @param budget the budget to save
      */
@@ -350,41 +411,67 @@ public class FinanceDataAccess implements
         if (arr == null) {
             arr = new JSONArray();
         }
-
-        // Ensure budgetID is set; simple "max existing + 1" strategy if needed.
-        if (budget.getBudgetID() == 0) {
-            int nextId = 1;
-            for (int i = 0; i < arr.length(); i++) {
-                JSONObject obj = arr.getJSONObject(i);
-                int existingId = obj.optInt("budgetID", 0);
-                if (existingId >= nextId) {
-                    nextId = existingId + 1;
-                }
-            }
-            budget.setBudgetID(nextId);
-        }
-
         boolean updated = false;
         for (int i = 0; i < arr.length(); i++) {
             JSONObject obj = arr.getJSONObject(i);
             String m = obj.optString("month", null);
             if (budget.getMonth().equals(m)) {
-                obj.put("budgetID", budget.getBudgetID());
-                obj.put("month", budget.getMonth());
-                obj.put("limit", budget.getLimit());
-                obj.put("totalSpent", budget.getTotalSpent());
+                JSONObject newObj = new JSONObject();
+                newObj.put("month", budget.getMonth());
+                newObj.put("limit", budget.getLimit());
+                newObj.put("totalSpent", budget.getTotalSpent());
+                newObj.put("notes",
+                        budget.getNotes() == null || budget.getNotes().isBlank()
+                                ? JSONObject.NULL
+                                : budget.getNotes());
+                newObj.put("lastUpdated",
+                        budget.getLastUpdated() == null || budget.getLastUpdated().isBlank()
+                                ? JSONObject.NULL
+                                : budget.getLastUpdated());
+                arr.put(i, newObj);
                 updated = true;
                 break;
             }
         }
-
         if (!updated) {
-            JSONObject obj = new JSONObject();
-            obj.put("budgetID", budget.getBudgetID());
-            obj.put("month", budget.getMonth());
-            obj.put("limit", budget.getLimit());
-            obj.put("totalSpent", budget.getTotalSpent());
-            arr.put(obj);
+            JSONObject newObj = new JSONObject();
+            newObj.put("month", budget.getMonth());
+            newObj.put("limit", budget.getLimit());
+            newObj.put("totalSpent", budget.getTotalSpent());
+            newObj.put("notes",
+                    budget.getNotes() == null || budget.getNotes().isBlank()
+                            ? JSONObject.NULL
+                            : budget.getNotes());
+            newObj.put("lastUpdated",
+                    budget.getLastUpdated() == null || budget.getLastUpdated().isBlank()
+                            ? JSONObject.NULL
+                            : budget.getLastUpdated());
+            arr.put(newObj);
+        }
+        root.put("budgets", arr);
+        writeBudgetRoot(root);
+    }
+
+    /**
+     * Delete a budget for the given month.
+     *
+     * @param monthKey the month identifier (e.g., "2025-11")
+     */
+    @Override
+    public synchronized void deleteBudget(String monthKey) {
+        JSONObject root = readBudgetRoot();
+        JSONArray arr = root.optJSONArray("budgets");
+        if (arr == null) {
+            return;
+        }
+
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            String m = obj.optString("month", null);
+            if (monthKey.equals(m)) {
+                arr.remove(i);
+                break;
+            }
         }
 
         root.put("budgets", arr);
@@ -392,51 +479,244 @@ public class FinanceDataAccess implements
     }
 
     // ===============================
-    // Label-related interfaces (TODOs)
+    // Label-related interfaces
     // ===============================
-    // TODO: Proper label persistence should be implemented here in a later iteration.
 
     @Override
     public AddLabelExpense getAddLabelExpense(int id) {
-        // TODO: Implement retrieval of AddLabelExpense for a transaction
         return null;
     }
 
     @Override
     public void removeLabelFromAllEntries(int labelId) {
-        // TODO: Remove the given labelId from all transactions in storage
+        List<Transaction> transactions = getAll();
+        boolean modified = false;
+
+        for (Transaction t : transactions) {
+            List<Label> labels = t.getLabels();
+            if (labels != null) {
+                int sizeBefore = labels.size();
+                labels.removeIf(l -> l.getLabelId() == labelId);
+
+                if (labels.size() != sizeBefore) {
+                    modified = true;
+
+                    // If transaction now has no labels, add Uncategorized
+                    if (labels.isEmpty()) {
+                        Label uncategorized = getUncategorizedLabel();
+                        if (uncategorized != null) {
+                            labels.add(uncategorized);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (modified) {
+            writeTransactions(transactions);
+        }
     }
 
     @Override
     public void assignLabelExpense(int id, Label label) {
-        // TODO: Assign the given label to the transaction with the given id
+        List<Transaction> transactions = getAll();
+        boolean modified = false;
+
+        for (Transaction t : transactions) {
+            if (t.getId() == id) {
+                List<Label> labels = t.getLabels();
+
+                // Remove Uncategorized label if this is a new user-added label
+                if (labels != null) {
+                    labels.removeIf(l -> "Uncategorized".equalsIgnoreCase(l.getLabelName()));
+
+                    // Add the new label if not already present
+                    boolean alreadyHasLabel = false;
+                    for (Label existingLabel : labels) {
+                        if (existingLabel.getLabelId() == label.getLabelId()) {
+                            alreadyHasLabel = true;
+                            break;
+                        }
+                    }
+
+                    if (!alreadyHasLabel) {
+                        labels.add(label);
+                    }
+                }
+
+                modified = true;
+                break;
+            }
+        }
+
+        if (modified) {
+            writeTransactions(transactions);
+        }
+    }
+
+    @Override
+    public void removeLabelFromExpense(int id, int labelId) {
+        List<Transaction> transactions = getAll();
+        boolean modified = false;
+
+        for (Transaction t : transactions) {
+            if (t.getId() == id) {
+                List<Label> labels = t.getLabels();
+                if (labels != null) {
+                    int before = labels.size();
+                    labels.removeIf(l -> l.getLabelId() == labelId);
+
+                    // Check if removal happened before adding Uncategorized
+                    if (labels.size() != before) {
+                        modified = true;
+                    }
+
+                    if (labels.isEmpty()) {
+                        Label uncategorized = getUncategorizedLabel();
+                        if (uncategorized != null) {
+                            labels.add(uncategorized);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+        if (modified) {
+            writeTransactions(transactions);
+        }
     }
 
     @Override
     public void updateLabel(Label label) {
-        // TODO: Update an existing label in LabelData.JSON
+        JSONObject root = readLabelRoot();
+        JSONArray arr = root.optJSONArray("labels");
+        if (arr == null) {
+            return;
+        }
+
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            if (obj.optInt("labelId") == label.getLabelId()) {
+                obj.put("labelName", label.getLabelName());
+                obj.put("color", label.getColor());
+                obj.put("description", label.getDescription() == null ? "" : label.getDescription());
+                break;
+            }
+        }
+
+        root.put("labels", arr);
+        writeLabelRoot(root);
     }
 
     @Override
     public void createLabel(Label label) {
-        // TODO: Persist a new label into LabelData.JSON
+        JSONObject root = readLabelRoot();
+        JSONArray arr = root.optJSONArray("labels");
+        if (arr == null) {
+            arr = new JSONArray();
+        }
+
+        // Assign new labelId if not set
+        if (label.getLabelId() == 0) {
+            int nextId = 1;
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject obj = arr.getJSONObject(i);
+                int existingId = obj.optInt("labelId", 0);
+                if (existingId >= nextId) {
+                    nextId = existingId + 1;
+                }
+            }
+            label.setLabelId(nextId);
+        }
+
+        JSONObject obj = new JSONObject();
+        obj.put("labelId", label.getLabelId());
+        obj.put("labelName", label.getLabelName());
+        obj.put("color", label.getColor());
+        obj.put("description", label.getDescription() == null ? "" : label.getDescription());
+        arr.put(obj);
+
+        root.put("labels", arr);
+        writeLabelRoot(root);
     }
 
     @Override
     public Label getLabelById(int labelId) {
-        // TODO: Retrieve a label by its ID from LabelData.JSON
+        JSONObject root = readLabelRoot();
+        JSONArray arr = root.optJSONArray("labels");
+        if (arr == null) {
+            return null;
+        }
+
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            if (obj.optInt("labelId") == labelId) {
+                return new Label(
+                        obj.optInt("labelId"),
+                        obj.optString("labelName"),
+                        obj.optString("color"),
+                        obj.optString("description"));
+            }
+        }
         return null;
     }
 
     @Override
-    public boolean userHasLabelName(int userid, String labelName) {
-        // TODO: Check if the given user already has a label with this name
+    public boolean labelExists(int userid, String labelName) {
+        JSONObject root = readLabelRoot();
+        JSONArray arr = root.optJSONArray("labels");
+        if (arr == null) {
+            return false;
+        }
+
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            if (obj.optString("labelName").equalsIgnoreCase(labelName)) {
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
+    public List<Label> getAllLabelsByUser(int userid) {
+        List<Label> result = new ArrayList<>();
+        JSONObject root = readLabelRoot();
+        JSONArray arr = root.optJSONArray("labels");
+        if (arr == null) {
+            return result;
+        }
+
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            result.add(new Label(
+                    obj.optInt("labelId"),
+                    obj.optString("labelName"),
+                    obj.optString("color"),
+                    obj.optString("description")));
+        }
+        return result;
+    }
+
+    @Override
     public void deleteLabel(int labelId) {
-        // TODO: Delete the label with the given ID from LabelData.JSON
+        JSONObject root = readLabelRoot();
+        JSONArray arr = root.optJSONArray("labels");
+        if (arr == null) {
+            return;
+        }
+
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            if (obj.optInt("labelId") == labelId) {
+                arr.remove(i);
+                break;
+            }
+        }
+
+        root.put("labels", arr);
+        writeLabelRoot(root);
     }
 
     // ===============================
@@ -486,5 +766,29 @@ public class FinanceDataAccess implements
 
     private void writeBudgetRoot(JSONObject root) {
         writeFile(budgetFile, root.toString(4));
+    }
+
+    private JSONObject readLabelRoot() {
+        if (!labelFile.exists()) {
+            return new JSONObject();
+        }
+        String content = readFile(labelFile);
+        if (content == null) {
+            return new JSONObject();
+        }
+        content = content.trim();
+        if (content.isEmpty()) {
+            return new JSONObject();
+        }
+
+        try {
+            return new JSONObject(content);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse LabelData.JSON", e);
+        }
+    }
+
+    private void writeLabelRoot(JSONObject root) {
+        writeFile(labelFile, root.toString(4));
     }
 }
