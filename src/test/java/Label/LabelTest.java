@@ -14,7 +14,6 @@ public class LabelTest {
         Assertions.assertEquals(1, label.getLabelId());
         Assertions.assertEquals("Food", label.getLabelName());
         Assertions.assertEquals("Red", label.getColor());
-        Assertions.assertEquals(101, label.getLabelId());
         Assertions.assertEquals("Lunch", label.getDescription());
 
         // 2. Test Setters

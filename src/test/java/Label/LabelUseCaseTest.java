@@ -47,13 +47,6 @@ public class LabelUseCaseTest {
     }
 
     @Test
-    public void testCreateLabel_Fail_NegativeAmount() {
-        Label label = new Label(0, "Rent", "Red", "Desc");
-        String result = useCase.createLabel(label);
-        Assertions.assertEquals("Amount cannot be negative.", result);
-    }
-
-    @Test
     public void testCreateLabel_Fail_EmptyColor() {
         Label label = new Label(0, "Rent", "", "Desc");
         String result = useCase.createLabel(label);
