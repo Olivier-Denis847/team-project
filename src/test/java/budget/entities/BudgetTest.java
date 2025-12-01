@@ -1,4 +1,4 @@
-package Brandon.entities;
+package budget.entities;
 
 import entity.Budget;
 import org.junit.jupiter.api.Test;

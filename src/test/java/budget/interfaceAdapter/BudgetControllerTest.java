@@ -1,4 +1,4 @@
-package Brandon.interfaceAdapter;
+package budget.interfaceAdapter;
 
 import interface_adapter.budget.BudgetController;
 import use_case.budget.BudgetInputBoundary;

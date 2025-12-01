@@ -1,0 +1,34 @@
+[
+    {
+        "date": "1764556217854",
+        "note": "",
+        "amount": 34,
+        "labelIds": [2],
+        "id": 1,
+        "type": "Income"
+    },
+    {
+        "date": "1764556238088",
+        "note": "",
+        "amount": 345,
+        "labelIds": [1],
+        "id": 1,
+        "type": "Expense"
+    },
+    {
+        "date": "1764556255962",
+        "note": "",
+        "amount": 3454,
+        "labelIds": [1],
+        "id": 1,
+        "type": "Income"
+    },
+    {
+        "date": "1764556261030",
+        "note": "",
+        "amount": 34,
+        "labelIds": [1],
+        "id": 2,
+        "type": "Expense"
+    }
+]
