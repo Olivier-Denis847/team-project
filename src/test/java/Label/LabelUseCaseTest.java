@@ -1,15 +1,14 @@
 package Label;
 
-import data_access.ALEDataAccess;
-import data_access.LabelDataAccess;
 import entity.Label;
+import data_access.FinanceDataAccess;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import use_case.ALEDataAccessInterface;
-import use_case.AddLabelExpense;
-import use_case.LabelDataAccessInterface;
-import use_case.LabelUserCaseImp;
+import use_case.label.ALEDataAccessInterface;
+import use_case.label.AddLabelExpense;
+import use_case.label.LabelDataAccessInterface;
+import use_case.label.LabelUserCaseImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public class LabelUseCaseTest {
         // Reset the stubs before every test
         labelDao = new StubLabelDataAccess();
         aleDao = new StubALEDataAccess();
-        useCase = new LabelUserCaseImp(labelDao, aleDao);
+        useCase = new LabelUserCaseImp((LabelDataAccessInterface) labelDao, (ALEDataAccessInterface) aleDao);
     }
 
     // ==========================================
@@ -34,7 +33,7 @@ public class LabelUseCaseTest {
 
     @Test
     public void testCreateLabel_Success() {
-        Label label = new Label(0, "Rent", "Red", 1, 500.0, "Desc");
+        Label label = new Label(0, "Rent", "Red", "Desc");
         String result = useCase.createLabel(label);
         Assertions.assertEquals("Label created successfully.", result);
         Assertions.assertTrue(labelDao.wasCreateCalled);
@@ -42,28 +41,28 @@ public class LabelUseCaseTest {
 
     @Test
     public void testCreateLabel_Fail_EmptyName() {
-        Label label = new Label(0, "", "Red", 1, 500.0, "Desc");
+        Label label = new Label(0, "", "Red", "Desc");
         String result = useCase.createLabel(label);
         Assertions.assertEquals("Label name cannot be empty.", result);
     }
 
     @Test
     public void testCreateLabel_Fail_NegativeAmount() {
-        Label label = new Label(0, "Rent", "Red", 1, -10.0, "Desc");
+        Label label = new Label(0, "Rent", "Red", "Desc");
         String result = useCase.createLabel(label);
         Assertions.assertEquals("Amount cannot be negative.", result);
     }
 
     @Test
     public void testCreateLabel_Fail_EmptyColor() {
-        Label label = new Label(0, "Rent", "", 1, 500.0, "Desc");
+        Label label = new Label(0, "Rent", "", "Desc");
         String result = useCase.createLabel(label);
         Assertions.assertEquals("Color cannot be empty.", result);
     }
 
     @Test
     public void testCreateLabel_Fail_DuplicateName() {
-        Label label = new Label(0, "Rent", "Red", 1, 500.0, "Desc");
+        Label label = new Label(0, "Rent", "Red", "Desc");
         labelDao.forceExists = true; // Simulate that label exists
         String result = useCase.createLabel(label);
         Assertions.assertEquals("Label with this name already exists.", result);
@@ -75,7 +74,7 @@ public class LabelUseCaseTest {
 
     @Test
     public void testEditLabel_Success() {
-        Label label = new Label(1, "Rent", "Red", 1, 500.0, "Desc");
+        Label label = new Label(1, "Rent", "Red", "Desc");
         String result = useCase.editLabel(label);
         Assertions.assertEquals("Label updated successfully.", result);
         Assertions.assertTrue(labelDao.wasUpdateCalled);
@@ -85,7 +84,7 @@ public class LabelUseCaseTest {
     public void testEditLabel_Fail_Validation() {
         // We only need to test one fail condition here since the logic
         // mirrors createLabel, but testing one confirms the "if" works.
-        Label label = new Label(1, null, "Red", 1, 500.0, "Desc");
+        Label label = new Label(1, null, "Red", "Desc");
         String result = useCase.editLabel(label);
         Assertions.assertEquals("Label name cannot be empty.", result);
     }
@@ -96,7 +95,7 @@ public class LabelUseCaseTest {
 
     @Test
     public void testDeleteLabel_Success() {
-        labelDao.returnLabel = new Label(1, "Rent", "Red", 1, 500.0, "Desc");
+        labelDao.returnLabel = new Label(1, "Rent", "Red", "Desc");
         String result = useCase.deleteLabel(1);
         Assertions.assertEquals("Label deleted successfully.", result);
         Assertions.assertTrue(labelDao.wasDeleteCalled);
@@ -117,7 +116,7 @@ public class LabelUseCaseTest {
     @Test
     public void testAssignLabel_Success() {
         aleDao.returnAle = new AddLabelExpense(1, 100.0, true);
-        labelDao.returnLabel = new Label(1, "Rent", "Red", 1, 500.0, "Desc");
+        labelDao.returnLabel = new Label(1, "Rent", "Red", "Desc");
 
         String result = useCase.assignLabelToAle(1, 1);
         Assertions.assertEquals("Label added to expense successfully.", result);
@@ -127,7 +126,7 @@ public class LabelUseCaseTest {
     @Test
     public void testAssignLabel_Fail_ExpenseNotFound() {
         aleDao.returnAle = null; // Simulate ALE not found
-        labelDao.returnLabel = new Label(1, "Rent", "Red", 1, 500.0, "Desc");
+        labelDao.returnLabel = new Label(1, "Rent", "Red", "Desc");
 
         String result = useCase.assignLabelToAle(1, 1);
         Assertions.assertEquals("Expense not found.", result);
@@ -156,7 +155,7 @@ public class LabelUseCaseTest {
     // STUB Classes (Fake Database) - Implements Interfaces for Testing
     // =================================================================
 
-    class StubLabelDataAccess extends LabelDataAccess implements LabelDataAccessInterface {
+    class StubLabelDataAccess extends FinanceDataAccess implements LabelDataAccessInterface {
         boolean wasCreateCalled = false;
         boolean wasUpdateCalled = false;
         boolean wasDeleteCalled = false;
@@ -186,7 +185,7 @@ public class LabelUseCaseTest {
         public void deleteLabel(int labelId) { wasDeleteCalled = true; }
     }
 
-    class StubALEDataAccess extends ALEDataAccess implements ALEDataAccessInterface {
+    static class StubALEDataAccess extends FinanceDataAccess implements ALEDataAccessInterface {
         boolean wasRemoveCalled = false;
         boolean wasAssignCalled = false;
         AddLabelExpense returnAle = null;

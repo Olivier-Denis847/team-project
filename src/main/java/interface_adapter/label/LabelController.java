@@ -22,10 +22,6 @@ public class LabelController {
         return userCase.editLabel(label);
     }
 
-    public String assignLabelToAle(int id, int labelId) {
-        return userCase.assignLabelToAle(id, labelId);
-    }
-
     public void assignLabelToExpense(int transactionId, Label label) {
         userCase.assignLabelToExpense(transactionId, label);
     }
