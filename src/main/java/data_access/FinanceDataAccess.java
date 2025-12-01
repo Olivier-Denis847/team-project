@@ -379,7 +379,20 @@ public class FinanceDataAccess implements
             if (month.equals(m)) {
                 float limit = (float) obj.optDouble("limit", 0.0);
                 float totalSpent = (float) obj.optDouble("totalSpent", 0.0);
-                return new Budget(month, limit, totalSpent);
+
+                Budget budget = new Budget(month, limit, totalSpent);
+
+                String notes = obj.optString("notes", null);
+                if (notes != null && !notes.isBlank()) {
+                    budget.setNotes(notes);
+                }
+
+                String lastUpdated = obj.optString("lastUpdated", null);
+                if (lastUpdated != null && !lastUpdated.isBlank()) {
+                    budget.setLastUpdated(lastUpdated);
+                }
+
+                return budget;
             }
         }
         return null;
@@ -398,28 +411,43 @@ public class FinanceDataAccess implements
         if (arr == null) {
             arr = new JSONArray();
         }
-
         boolean updated = false;
         for (int i = 0; i < arr.length(); i++) {
             JSONObject obj = arr.getJSONObject(i);
             String m = obj.optString("month", null);
             if (budget.getMonth().equals(m)) {
-                obj.put("month", budget.getMonth());
-                obj.put("limit", budget.getLimit());
-                obj.put("totalSpent", budget.getTotalSpent());
+                JSONObject newObj = new JSONObject();
+                newObj.put("month", budget.getMonth());
+                newObj.put("limit", budget.getLimit());
+                newObj.put("totalSpent", budget.getTotalSpent());
+                newObj.put("notes",
+                        budget.getNotes() == null || budget.getNotes().isBlank()
+                                ? JSONObject.NULL
+                                : budget.getNotes());
+                newObj.put("lastUpdated",
+                        budget.getLastUpdated() == null || budget.getLastUpdated().isBlank()
+                                ? JSONObject.NULL
+                                : budget.getLastUpdated());
+                arr.put(i, newObj);
                 updated = true;
                 break;
             }
         }
-
         if (!updated) {
-            JSONObject obj = new JSONObject();
-            obj.put("month", budget.getMonth());
-            obj.put("limit", budget.getLimit());
-            obj.put("totalSpent", budget.getTotalSpent());
-            arr.put(obj);
+            JSONObject newObj = new JSONObject();
+            newObj.put("month", budget.getMonth());
+            newObj.put("limit", budget.getLimit());
+            newObj.put("totalSpent", budget.getTotalSpent());
+            newObj.put("notes",
+                    budget.getNotes() == null || budget.getNotes().isBlank()
+                            ? JSONObject.NULL
+                            : budget.getNotes());
+            newObj.put("lastUpdated",
+                    budget.getLastUpdated() == null || budget.getLastUpdated().isBlank()
+                            ? JSONObject.NULL
+                            : budget.getLastUpdated());
+            arr.put(newObj);
         }
-
         root.put("budgets", arr);
         writeBudgetRoot(root);
     }
