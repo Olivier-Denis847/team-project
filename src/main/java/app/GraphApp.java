@@ -12,16 +12,17 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GraphApp {
-    public static void start(FinanceDataAccess financeDataAccess) {
-        // Use the shared FinanceDataAccess instance
-        GraphDataAccessInterface dataAccess = financeDataAccess;
 
+    private GraphApp(){
+        throw new IllegalStateException("Utility class");
+    }
+    public static void start(FinanceDataAccess financeDataAccess) {
         // Set up presenter and view model
         GraphViewModel viewModel = new GraphViewModel();
         GraphPresenter presenter = new GraphPresenter(viewModel);
 
         // Set up interactor
-        GraphInteractor interactor = new GraphInteractor(dataAccess, presenter);
+        GraphInteractor interactor = new GraphInteractor(financeDataAccess, presenter);
 
         // Set up controller
         GraphController controller = new GraphController(interactor);

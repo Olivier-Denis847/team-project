@@ -19,12 +19,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Map;
 
 public class GraphPanel extends JPanel implements ActionListener, PropertyChangeListener {
-    private JPanel leftGraphContainer;
-    private JPanel rightGraphContainer;
-
-    private GraphViewModel gvm;
-    private GraphController gc = null;
-
+    private transient GraphController gc;
     private DefaultPieDataset<String> pieDataset;
     private DefaultCategoryDataset barDataset;
     private org.jfree.chart.plot.PiePlot<String> piePlot; // Store reference to pie plot
@@ -54,8 +49,6 @@ public class GraphPanel extends JPanel implements ActionListener, PropertyChange
         c.gridy = 1;
         add(bottomContainer, c);
 
-        this.gvm = gvm;
-
         // range selector buttons
         JPanel rangeSelectorContainer = new JPanel();
         rangeSelectorContainer.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -73,17 +66,15 @@ public class GraphPanel extends JPanel implements ActionListener, PropertyChange
 
         for (JButton button : rangeButtons) {
             final JButton b = button;
-            button.addActionListener(
-                    new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
-                            if (evt.getSource().equals(b)) {
-                                final GraphState currentState = gvm.getState();
-                                gc.execute(
-                                        b.getText(),
-                                        currentState.getSelectedType());
-                            }
-                        }
-                    });
+            button.addActionListener(evt -> {
+                if (evt.getSource().equals(b)) {
+                    final GraphState currentState = gvm.getState();
+                    gc.execute(
+                            b.getText(),
+                            currentState.getSelectedType()
+                    );
+                }
+            });
         }
 
         // Set default background color for range buttons
@@ -95,16 +86,14 @@ public class GraphPanel extends JPanel implements ActionListener, PropertyChange
         setActive(dayButton, rangeButtons); // Default selected
 
         for (JButton button : rangeButtons) {
-            button.addActionListener(
-                    new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
-                            setActive(button, rangeButtons);
-                            final GraphState currentState = gvm.getState();
-                            gc.execute(
-                                    button.getText(),
-                                    currentState.getSelectedType());
-                        }
-                    });
+            button.addActionListener(evt -> {
+                setActive(button, rangeButtons);
+                final GraphState currentState = gvm.getState();
+                gc.execute(
+                        button.getText(),
+                        currentState.getSelectedType()
+                );
+            });
         }
 
         // type selector buttons
@@ -122,17 +111,15 @@ public class GraphPanel extends JPanel implements ActionListener, PropertyChange
 
         for (JButton button : typeButtons) {
             final JButton b = button;
-            button.addActionListener(
-                    new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
-                            if (evt.getSource().equals(b)) {
-                                final GraphState currentState = gvm.getState();
-                                gc.execute(
-                                        currentState.getSelectedRange(),
-                                        b.getText());
-                            }
-                        }
-                    });
+            button.addActionListener(evt -> {
+                if (evt.getSource().equals(b)) {
+                    final GraphState currentState = gvm.getState();
+                    gc.execute(
+                            currentState.getSelectedRange(),
+                            b.getText()
+                    );
+                }
+            });
         }
 
         // Set default background color for type buttons
@@ -144,28 +131,26 @@ public class GraphPanel extends JPanel implements ActionListener, PropertyChange
         setActive(expenseButton, typeButtons); // Default selected
 
         for (JButton button : typeButtons) {
-            button.addActionListener(
-                    new ActionListener() {
-                        public void actionPerformed(ActionEvent evt) {
-                            setActive(button, typeButtons);
-                            final GraphState currentState = gvm.getState();
-                            gc.execute(
-                                    currentState.getSelectedRange(),
-                                    button.getText());
-                        }
-                    });
+            button.addActionListener(evt -> {
+                setActive(button, typeButtons);
+                final GraphState currentState = gvm.getState();
+                gc.execute(
+                        currentState.getSelectedRange(),
+                        button.getText()
+                );
+            });
         }
 
         // create bar graph
         JFreeChart barChart = createBarChart();
         barChart.getPlot().setBackgroundPaint(Color.WHITE);
-        leftGraphContainer = new ChartPanel(barChart);
+        JPanel leftGraphContainer = new ChartPanel(barChart);
         bottomContainer.add(leftGraphContainer);
 
         // create pie graph
         JFreeChart pieChart = createPieChart();
         pieChart.getPlot().setBackgroundPaint(Color.WHITE);
-        rightGraphContainer = new ChartPanel(pieChart);
+        JPanel rightGraphContainer = new ChartPanel(pieChart);
         bottomContainer.add(rightGraphContainer);
     }
 
@@ -191,15 +176,14 @@ public class GraphPanel extends JPanel implements ActionListener, PropertyChange
 
     private JFreeChart createBarChart() {
         barDataset = new DefaultCategoryDataset();
-        JFreeChart barChart = ChartFactory.createBarChart(
+
+        // TODO: Configure x-axis to reduce overlapping labels
+        return ChartFactory.createBarChart(
                 "Date",
                 "",
                 "",
-                barDataset);
-
-        // TODO: Configure x-axis to reduce overlapping labels
-
-        return barChart;
+                barDataset
+        );
     }
 
     public void setGraphController(GraphController gc) {
@@ -212,7 +196,7 @@ public class GraphPanel extends JPanel implements ActionListener, PropertyChange
      * @param evt event
      */
     public void actionPerformed(ActionEvent evt) {
-        System.out.println("clicked " + evt.getActionCommand());
+        // not needed
     }
 
     @Override
@@ -227,18 +211,13 @@ public class GraphPanel extends JPanel implements ActionListener, PropertyChange
         pieDataset.clear();
 
         // update bar dataset (use bar map)
-        Map<Integer, Float> bar = state.getBar();
-        if (bar != null) {
-            for (Map.Entry<Integer, Float> entry : bar.entrySet()) {
-                Integer colKey = entry.getKey();
-                Float val = entry.getValue();
-                if (colKey != null && val != null) {
-                    barDataset.addValue(val, state.getSelectedType(), colKey);
-                }
-            }
-        }
+        updateBarDataset(state);
 
         // update pie dataset with label colors
+        updatePieDataset(state);
+    }
+
+    private void updatePieDataset(GraphState state) {
         Map<String, Float> data = state.getPie();
         Map<String, String> labelColors = state.getLabelColors();
 
@@ -250,16 +229,32 @@ public class GraphPanel extends JPanel implements ActionListener, PropertyChange
                     pieDataset.setValue(labelName, entry.getValue());
 
                     // Apply color to this section if available
-                    if (labelColors != null && labelColors.containsKey(labelName)) {
-                        try {
-                            String hexColor = labelColors.get(labelName);
-                            Color color = Color.decode(hexColor);
-                            piePlot.setSectionPaint(labelName, color);
-                        } catch (Exception e) {
-                            // If color parsing fails, use default color
-                            System.err.println("Failed to parse color for label: " + labelName);
-                        }
-                    }
+                    applyColor(labelColors, labelName);
+                }
+            }
+        }
+    }
+
+    private void applyColor(Map<String, String> labelColors, String labelName) {
+        if (labelColors != null && labelColors.containsKey(labelName)) {
+            try {
+                String hexColor = labelColors.get(labelName);
+                Color color = Color.decode(hexColor);
+                piePlot.setSectionPaint(labelName, color);
+            } catch (Exception e) {
+                // If color parsing fails, use default color
+            }
+        }
+    }
+
+    private void updateBarDataset(GraphState state) {
+        Map<Integer, Float> bar = state.getBar();
+        if (bar != null) {
+            for (Map.Entry<Integer, Float> entry : bar.entrySet()) {
+                Integer colKey = entry.getKey();
+                Float val = entry.getValue();
+                if (colKey != null && val != null) {
+                    barDataset.addValue(val, state.getSelectedType(), colKey);
                 }
             }
         }

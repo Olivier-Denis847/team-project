@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 public class GraphOutputData {
-    private String selectedRange;
-    private String selectedType;
-    private Map<Integer, Float> bar;
-    private Map<String, Float> pie;
-    private Map<String, String> labelColors; // Map label names to hex colors
-    private List<String> alerts;
+    private final String selectedRange;
+    private final String selectedType;
+    private final Map<Integer, Float> bar;
+    private final Map<String, Float> pie;
+    private final Map<String, String> labelColors; // Map label names to hex colors
+    private final List<String> alerts;
 
     public GraphOutputData(String selectedRange,
             String selectedType,

@@ -86,31 +86,43 @@ public class GraphInteractor implements GraphInputBoundary {
             Calendar nowCal,
             int nowYear) {
         if (selectedRange.equalsIgnoreCase("Day")) {
-            int daysInMonth = nowCal.getActualMaximum(Calendar.DAY_OF_MONTH);
-            for (int d = 1; d <= daysInMonth; d++) {
-                bar.put(d, 0f);
-            }
+            fillDay(bar, nowCal);
         } else if (selectedRange.equalsIgnoreCase("Month")) {
-            for (int m = 1; m <= 12; m++) {
-                bar.put(m, 0f);
-            }
+            fillMonth(bar);
         } else {
-            int minYear = Integer.MAX_VALUE;
-            for (Transaction t : transactions) {
-                Date td = t.getDate();
-                if (td == null) {
-                    continue;
-                }
-                Calendar cc = Calendar.getInstance();
-                cc.setTime(td);
-                minYear = Math.min(minYear, cc.get(Calendar.YEAR));
+            fillYear(bar, transactions, nowYear);
+        }
+    }
+
+    private static void fillYear(Map<Integer, Float> bar, List<Transaction> transactions, int nowYear) {
+        int minYear = Integer.MAX_VALUE;
+        for (Transaction t : transactions) {
+            Date td = t.getDate();
+            if (td == null) {
+                continue;
             }
-            if (minYear == Integer.MAX_VALUE) {
-                minYear = nowYear;
-            }
-            for (int y = minYear; y <= nowYear; y++) {
-                bar.put(y, 0f);
-            }
+            Calendar cc = Calendar.getInstance();
+            cc.setTime(td);
+            minYear = Math.min(minYear, cc.get(Calendar.YEAR));
+        }
+        if (minYear == Integer.MAX_VALUE) {
+            minYear = nowYear;
+        }
+        for (int y = minYear; y <= nowYear; y++) {
+            bar.put(y, 0f);
+        }
+    }
+
+    private static void fillMonth(Map<Integer, Float> bar) {
+        for (int m = 1; m <= 12; m++) {
+            bar.put(m, 0f);
+        }
+    }
+
+    private static void fillDay(Map<Integer, Float> bar, Calendar nowCal) {
+        int daysInMonth = nowCal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        for (int d = 1; d <= daysInMonth; d++) {
+            bar.put(d, 0f);
         }
     }
 
@@ -173,10 +185,7 @@ public class GraphInteractor implements GraphInputBoundary {
         for (Label label : labels) {
             String labelName = label.getLabelName();
 
-            // Store the color for this label
-            if (!labelColors.containsKey(labelName)) {
-                labelColors.put(labelName, label.getColor());
-            }
+            labelColors.computeIfAbsent(labelName, k -> label.getColor());
 
             if (!pie.containsKey(labelName))
                 pie.put(labelName, t.getAmount());

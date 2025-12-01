@@ -26,12 +26,10 @@ public class GraphPresenter implements GraphOutputBoundary {
         if (data.getLabelColors() != null)
             graphState.setLabelColors(data.getLabelColors());
         gvm.firePropertyChange();
-
-        // TODO: implement ALERT logic
     }
 
     @Override
     public void prepareAlert(GraphOutputData data) {
-
+        // TODO: implement alert logic
     }
 }

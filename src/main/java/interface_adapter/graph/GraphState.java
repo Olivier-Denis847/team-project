@@ -32,13 +32,13 @@ public class GraphState {
 
     public List<Integer> getX() {
         if (bar == null)
-            return null;
+            return new  ArrayList<>();
         return new ArrayList<>(bar.keySet());
     }
 
     public List<Float> getY() {
         if (bar == null)
-            return null;
+            return new  ArrayList<>();
         return new ArrayList<>(bar.values());
     }
 
