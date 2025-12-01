@@ -8,8 +8,8 @@ import java.awt.*;
 
 public class SetBudgetView extends JPanel {
 
-    private final BudgetController controller;
-    private final BudgetViewModel viewModel;
+    private final transient BudgetController controller;
+    private final transient BudgetViewModel viewModel;
 
     private static final int MIN_YEAR = 2006;
     private static final int MAX_YEAR = 2030;
@@ -120,9 +120,7 @@ public class SetBudgetView extends JPanel {
 
         // Button actions
         saveBtn.addActionListener(e -> handleSave());
-        resetBtn.addActionListener(e -> {
-            clearForm();
-        });
+        resetBtn.addActionListener(e -> clearForm());
 
         prevButton.addActionListener(e -> {
             clearForm();
@@ -239,7 +237,7 @@ public class SetBudgetView extends JPanel {
     }
 
     // Helper listener
-    private class SimpleListener implements javax.swing.event.DocumentListener {
+    private static class SimpleListener implements javax.swing.event.DocumentListener {
         private final Runnable callback;
         SimpleListener(Runnable r) { this.callback = r; }
 

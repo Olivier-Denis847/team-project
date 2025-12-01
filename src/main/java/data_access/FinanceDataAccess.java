@@ -361,6 +361,13 @@ public class FinanceDataAccess implements
     // Credit: Brandon - originally created FileBudgetDataAccess
     // ===============================
 
+    private static final String LABEL_BUDGETS = "budgets";
+    private static final String LABEL_MONTH = "month";
+    private static final String LABEL_LIMIT = "limit";
+    private static final String LABEL_SPENT = "spent";
+    private static final String LABEL_NOTES = "notes";
+    private static final String LABEL_UPDATED = "lastUpdated";
+
     /**
      * @param month the month of interest (e.g., "2025-11")
      * @return the Budget for that month, or null if none exists
@@ -368,26 +375,26 @@ public class FinanceDataAccess implements
     @Override
     public synchronized Budget getBudgetForMonth(String month) {
         JSONObject root = readBudgetRoot();
-        if (!root.has("budgets") || root.isNull("budgets")) {
+        if (!root.has(LABEL_BUDGETS) || root.isNull(LABEL_BUDGETS)) {
             return null;
         }
 
-        JSONArray arr = root.getJSONArray("budgets");
+        JSONArray arr = root.getJSONArray(LABEL_BUDGETS);
         for (int i = 0; i < arr.length(); i++) {
             JSONObject obj = arr.getJSONObject(i);
-            String m = obj.optString("month", null);
+            String m = obj.optString(LABEL_MONTH, null);
             if (month.equals(m)) {
-                float limit = (float) obj.optDouble("limit", 0.0);
-                float totalSpent = (float) obj.optDouble("totalSpent", 0.0);
+                float limit = (float) obj.optDouble(LABEL_LIMIT, 0.0);
+                float totalSpent = (float) obj.optDouble(LABEL_SPENT, 0.0);
 
                 Budget budget = new Budget(month, limit, totalSpent);
 
-                String notes = obj.optString("notes", null);
+                String notes = obj.optString(LABEL_NOTES, null);
                 if (notes != null && !notes.isBlank()) {
                     budget.setNotes(notes);
                 }
 
-                String lastUpdated = obj.optString("lastUpdated", null);
+                String lastUpdated = obj.optString(LABEL_UPDATED, null);
                 if (lastUpdated != null && !lastUpdated.isBlank()) {
                     budget.setLastUpdated(lastUpdated);
                 }
@@ -407,49 +414,49 @@ public class FinanceDataAccess implements
     @Override
     public synchronized void saveBudget(Budget budget) {
         JSONObject root = readBudgetRoot();
-        JSONArray arr = root.optJSONArray("budgets");
+        JSONArray arr = root.optJSONArray(LABEL_BUDGETS);
         if (arr == null) {
             arr = new JSONArray();
         }
-        boolean updated = false;
-        for (int i = 0; i < arr.length(); i++) {
-            JSONObject obj = arr.getJSONObject(i);
-            String m = obj.optString("month", null);
-            if (budget.getMonth().equals(m)) {
-                JSONObject newObj = new JSONObject();
-                newObj.put("month", budget.getMonth());
-                newObj.put("limit", budget.getLimit());
-                newObj.put("totalSpent", budget.getTotalSpent());
-                newObj.put("notes",
-                        budget.getNotes() == null || budget.getNotes().isBlank()
-                                ? JSONObject.NULL
-                                : budget.getNotes());
-                newObj.put("lastUpdated",
-                        budget.getLastUpdated() == null || budget.getLastUpdated().isBlank()
-                                ? JSONObject.NULL
-                                : budget.getLastUpdated());
-                arr.put(i, newObj);
-                updated = true;
-                break;
-            }
-        }
-        if (!updated) {
-            JSONObject newObj = new JSONObject();
-            newObj.put("month", budget.getMonth());
-            newObj.put("limit", budget.getLimit());
-            newObj.put("totalSpent", budget.getTotalSpent());
-            newObj.put("notes",
-                    budget.getNotes() == null || budget.getNotes().isBlank()
-                            ? JSONObject.NULL
-                            : budget.getNotes());
-            newObj.put("lastUpdated",
-                    budget.getLastUpdated() == null || budget.getLastUpdated().isBlank()
-                            ? JSONObject.NULL
-                            : budget.getLastUpdated());
+
+        int index = findBudgetIndex(arr, budget.getMonth());
+        JSONObject newObj = createBudgetJson(budget);
+
+        if (index >= 0) {
+            arr.put(index, newObj);
+        } else {
             arr.put(newObj);
         }
-        root.put("budgets", arr);
+
+        root.put(LABEL_BUDGETS, arr);
         writeBudgetRoot(root);
+    }
+
+    private int findBudgetIndex(JSONArray arr, String month) {
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            String m = obj.optString(LABEL_MONTH, null);
+            if (month.equals(m)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private JSONObject createBudgetJson(Budget budget) {
+        JSONObject newObj = new JSONObject();
+        newObj.put(LABEL_MONTH, budget.getMonth());
+        newObj.put(LABEL_LIMIT, budget.getLimit());
+        newObj.put(LABEL_SPENT, budget.getTotalSpent());
+        newObj.put(LABEL_NOTES,
+                budget.getNotes() == null || budget.getNotes().isBlank()
+                        ? JSONObject.NULL
+                        : budget.getNotes());
+        newObj.put(LABEL_UPDATED,
+                budget.getLastUpdated() == null || budget.getLastUpdated().isBlank()
+                        ? JSONObject.NULL
+                        : budget.getLastUpdated());
+        return newObj;
     }
 
     /**
@@ -460,21 +467,21 @@ public class FinanceDataAccess implements
     @Override
     public synchronized void deleteBudget(String monthKey) {
         JSONObject root = readBudgetRoot();
-        JSONArray arr = root.optJSONArray("budgets");
+        JSONArray arr = root.optJSONArray(LABEL_BUDGETS);
         if (arr == null) {
             return;
         }
 
         for (int i = 0; i < arr.length(); i++) {
             JSONObject obj = arr.getJSONObject(i);
-            String m = obj.optString("month", null);
+            String m = obj.optString(LABEL_MONTH, null);
             if (monthKey.equals(m)) {
                 arr.remove(i);
                 break;
             }
         }
 
-        root.put("budgets", arr);
+        root.put(LABEL_BUDGETS, arr);
         writeBudgetRoot(root);
     }
 

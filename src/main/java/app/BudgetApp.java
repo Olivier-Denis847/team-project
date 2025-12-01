@@ -1,6 +1,5 @@
 package app;
 
-import use_case.budget.*;
 import interface_adapter.budget.*;
 import use_case.budget.BudgetInteractor;
 import view.budget.*;
@@ -16,16 +15,19 @@ public class BudgetApp {
         private static final String CHECK_BUDGET = "CHECK_BUDGET";
         private static final String YEAR_OVERVIEW = "YEAR_OVERVIEW";
 
+        private BudgetApp() {
+                // Prevent instantiation (utility class)
+        }
+
         public static void start(FinanceDataAccess dataAccess) {
                 SwingUtilities.invokeLater(() -> {
 
                         // Use the shared FinanceDataAccess instance
-                        BudgetDataAccessInterface budgetDataAccess = dataAccess;
 
-                        // Set Budget pipeline
+                    // Set Budget pipeline
                         BudgetViewModel setBudgetViewModel = new BudgetViewModel();
                         BudgetPresenter setBudgetPresenter = new BudgetPresenter(setBudgetViewModel);
-                        BudgetInteractor setBudgetInteractor = new BudgetInteractor(budgetDataAccess,
+                        BudgetInteractor setBudgetInteractor = new BudgetInteractor(dataAccess,
                                         setBudgetPresenter);
                         BudgetController setBudgetController = new BudgetController(setBudgetInteractor);
 
@@ -44,7 +46,7 @@ public class BudgetApp {
                                         () -> cardLayout.show(root, MAIN_MENU));
 
                         // Add CheckBudgetView and destinations
-                        CheckBudgetView checkBudgetView = new CheckBudgetView(budgetDataAccess,
+                        CheckBudgetView checkBudgetView = new CheckBudgetView(dataAccess,
                                         () -> cardLayout.show(root, MAIN_MENU),
                                         monthKey -> {
                                                 addBudgetView.setMonthYearFromKey(monthKey);
@@ -52,7 +54,7 @@ public class BudgetApp {
                                         });
 
                         // Add YearOverviewView and destinations
-                        YearOverviewView yearOverviewView = new YearOverviewView(budgetDataAccess,
+                        YearOverviewView yearOverviewView = new YearOverviewView(dataAccess,
                                         () -> cardLayout.show(root, MAIN_MENU),
                                         monthKey -> {
                                                 checkBudgetView.setMonthYearFromKey(monthKey);

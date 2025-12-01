@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests for BudgetController.
  * Ensures it forwards input values correctly to the interactor.
  */
-public class BudgetControllerTest {
+class BudgetControllerTest {
 
     /**
      * Fake interactor that records the last received input.
@@ -36,8 +36,8 @@ public class BudgetControllerTest {
 
         // Assert
         assertNotNull(fake.received, "Interactor should receive an input");
-        assertEquals("03-2025", fake.received.getMonth());
-        assertEquals(400f, fake.received.getLimit());
-        assertEquals(150f, fake.received.getTotalSpent());
+        assertEquals("03-2025", fake.received.month());
+        assertEquals(400f, fake.received.limit());
+        assertEquals(150f, fake.received.totalSpent());
     }
 }

@@ -13,10 +13,13 @@ public class BudgetViewModel {
     // Setters used by the presenter
     public void setMonth(String month) {this.month = month;}
     public void setLimit(float limit) {
+        // required by presenter
     }
     public void setTotalSpent(float totalSpent) {
+        // required by presenter
     }
     public void setRemaining(float remaining) {
+        // required by presenter
     }
     public void setSuccess(boolean success) {this.success = success;}
     public void setMessage(String message) {this.message = message;}

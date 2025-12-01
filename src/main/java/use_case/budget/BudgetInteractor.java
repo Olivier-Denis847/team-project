@@ -14,9 +14,9 @@ public class BudgetInteractor implements BudgetInputBoundary {
 
     @Override
     public void execute(BudgetInputData inputData) {
-        String month = inputData.getMonth();
-        float limit = inputData.getLimit();
-        float totalSpent = inputData.getTotalSpent();
+        String month = inputData.month();
+        float limit = inputData.limit();
+        float totalSpent = inputData.totalSpent();
 
         // Load or create entity
         Budget budget = budgetDataAccess.getBudgetForMonth(month);

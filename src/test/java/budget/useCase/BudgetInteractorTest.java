@@ -47,12 +47,12 @@ class BudgetInteractorTest {
         verify(presenter).present(outCaptor.capture());
         BudgetOutputData out = outCaptor.getValue();
 
-        assertEquals(monthKey, out.getMonth());
-        assertEquals(1000f, out.getLimit());
-        assertEquals(250f, out.getTotalSpent());
-        assertEquals(750f, out.getRemaining(), 0.0001);
-        assertTrue(out.getSuccess());
-        assertEquals("Budget set successfully.", out.getMessage());
+        assertEquals(monthKey, out.month());
+        assertEquals(1000f, out.limit());
+        assertEquals(250f, out.totalSpent());
+        assertEquals(750f, out.remaining(), 0.0001);
+        assertTrue(out.success());
+        assertEquals("Budget set successfully.", out.message());
     }
 
     @Test
