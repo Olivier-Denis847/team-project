@@ -7,6 +7,10 @@ import java.awt.*;
 
 public class SearchApp {
 
+    private SearchApp() {
+        // Prevent instantiation (utility class)
+    }
+
     public static void start(FinanceDataAccess dataAccess) {
         SwingUtilities.invokeLater(() -> {
 
@@ -62,9 +66,6 @@ public class SearchApp {
                     case "optimize" -> {
                         OptimizeApp.start();
                         frame.dispose();
-                    }
-                    default -> {
-                        errorLabel.setText("Unknown view: \"" + text + "\"");
                     }
                 }
             };
